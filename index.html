@@ -1,11 +1,11 @@
 // ===================================================================== //
-// ==               CÓDIGO JAVASCRIPT PARA SHEETDB                    == //
+// ==         CÓDIGO FINAL v8 - CORRIGIDO PARA ÍCONES E NOMES         == //
 // ===================================================================== //
 document.addEventListener('DOMContentLoaded', () => {
-    // COLE AQUI A SUA NOVA URL DA API DO SHEETDB
-    const SHEETDB_URL = 'https://sheetdb.io/api/v1/5h9c4wl36dheb';
+    const SHEETDB_URL = 'https://sheetdb.io/api/v1/ylo6jdqjh6p5l';
     
-    const loadingOverlay = document.getElementById('loadingOverlay');
+    // Seletores de elementos do DOM
+    const loadingOverlay = document.getElementById('loadingOverlay' );
     const requestsList = document.getElementById('requestsList');
     const emptyState = document.getElementById('emptyState');
     const pendingCountEl = document.getElementById('pendingCount');
@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const populateAreaFilter = () => {
         const currentArea = areaFilter.value;
-        const areas = [...new Set(allRequests.map(r => r.areasolicitante).filter(Boolean))];
+        // CORRIGIDO: Usa o nome exato da coluna "🏢 Área Solicitante"
+        const areas = [...new Set(allRequests.map(r => r['🏢 Área Solicitante']).filter(Boolean))];
         areaFilter.innerHTML = '<option value="todos">Todas as Áreas</option>';
         areas.sort().forEach(area => {
             const option = document.createElement('option');
@@ -99,11 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return allRequests.filter(req => {
             const statusMatch = status === 'todos' || req.status === status;
-            const areaMatch = area === 'todos' || req.areasolicitante === area;
+            // CORRIGIDO: Usa o nome exato da coluna "🏢 Área Solicitante"
+            const areaMatch = area === 'todos' || req['🏢 Área Solicitante'] === area;
             let dateMatch = true;
-            if (date && req['carimbo_de_data/hora']) {
+            // CORRIGIDO: Usa o nome exato da coluna "Carimbo de data/hora"
+            if (date && req['Carimbo de data/hora']) {
                 try {
-                    const reqDateStr = req['carimbo_de_data/hora'].split(' ')[0];
+                    const reqDateStr = req['Carimbo de data/hora'].split(' ')[0];
                     const [day, month, year] = reqDateStr.split('/');
                     const requestDate = new Date(`${year}-${month}-${day}T00:00:00`);
                     const filterDate = new Date(`${date}T00:00:00`);
@@ -113,8 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return statusMatch && areaMatch && dateMatch;
         }).sort((a, b) => {
             try {
-                const dateA = new Date(a['carimbo_de_data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + a['carimbo_de_data/hora'].split(' ')[1]);
-                const dateB = new Date(b['carimbo_de_data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + b['carimbo_de_data/hora'].split(' ')[1]);
+                // CORRIGIDO: Usa o nome exato da coluna "Carimbo de data/hora"
+                const dateA = new Date(a['Carimbo de data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + a['Carimbo de data/hora'].split(' ')[1]);
+                const dateB = new Date(b['Carimbo de data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + b['Carimbo de data/hora'].split(' ')[1]);
                 return dateB - dateA;
             } catch(e) { return 0; }
         });
@@ -139,16 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = `request-card status-${req.status}`;
             card.dataset.id = req.id;
 
-            const priority = req.tempo_de_atendimento || '';
+            // CORRIGIDO: Usa o nome exato da coluna "⏱️ Tempo de Atendimento:"
+            const priority = req['⏱️ Tempo de Atendimento:'] || '';
             let priorityClass = '';
             if (priority.includes('Urgente')) priorityClass = 'urgente';
             else if (priority.includes('Moderado')) priorityClass = 'moderado';
 
             let detailsHtml = '';
+            // CORRIGIDO: Usa os nomes exatos das colunas da sua planilha
             const fields = {
-                'solicitante': 'Solicitante', 'areasolicitante': 'Área', 'tipo_de_operação': 'Operação',
-                'código_do_item': 'Item', 'localização': 'Localização', 'observação': 'Observação',
-                'operador': 'Operador', 'observacao_operador': 'Obs. Operador', 'horario_inicio': 'Início', 'horario_conclusao': 'Conclusão'
+                '👤  Solicitante:': 'Solicitante', '🏢  Área Solicitante': 'Área', '📋  Tipo de Operação:': 'Operação',
+                '🆔  Código do Item:': 'Item', '📍  Localização (opcional)': 'Localização', '💬  Observação (opcional)': 'Observação',
+                'operador': 'Operador', 'observacaoOperador': 'Obs. Operador', 'horarioInicio': 'Início', 'horarioConclusao': 'Conclusão'
             };
             
             for(const key in fields) {
@@ -161,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="request-header">
                     <div>
                         <div class="request-id">${req.id || 'N/A'}</div>
-                        <div class="request-timestamp">${req['carimbo_de_data/hora'] || ''}</div>
+                        <div class="request-timestamp">${req['Carimbo de data/hora'] || ''}</div>
                     </div>
                     ${priority ? `<div class="priority-tag ${priorityClass}">${priority}</div>` : ''}
                 </div>
@@ -200,12 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const request = allRequests.find(r => r.id === id);
 
         if (action === 'start') {
-            updateData(id, { status: 'em-andamento', horario_inicio: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
+            updateData(id, { status: 'em-andamento', horarioInicio: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
         } else if (action === 'complete') {
-             updateData(id, { status: 'concluido', horario_conclusao: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
+             updateData(id, { status: 'concluido', horarioConclusao: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
         } else if (action === 'observe') {
             modalTitle.textContent = `Adicionar Observação para ${request.id}`;
-            observationText.value = request.observacao_operador || '';
+            observationText.value = request.observacaoOperador || '';
             observationModal.style.display = 'block';
         }
     };
@@ -219,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confirmActionBtn.addEventListener('click', () => {
         if (currentAction === 'observe' && currentRequestId !== null) {
-            updateData(currentRequestId, { observacao_operador: observationText.value });
+            updateData(currentRequestId, { observacaoOperador: observationText.value });
         }
         closeModal();
     });
