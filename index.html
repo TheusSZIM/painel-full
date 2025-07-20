@@ -4,597 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Operador - Empilhadeira</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>🚛</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>">
     <style>
-        /* --- CSS EMBUTIDO --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --card-background: #ffffff;
-            --text-primary: #2c3e50;
-            --text-secondary: #6c757d;
-            --border-color: #e9ecef;
-            --shadow: 0 2px 10px rgba(0,0,0,0.1);
-            --border-radius: 12px;
-        }
-
-        body {
-            font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-        }
-
-        /* Header */
-        .header {
-            background: var(--background-gradient);
-            color: white;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: \'\';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>\');
-            pointer-events: none;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-icon {
-            font-size: 3rem;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .logo-text h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .logo-text p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        /* Contadores de Status */
-        .status-counters {
-            display: flex;
-            gap: 20px;
-        }
-
-        .counter {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: var(--border-radius);
-            padding: 20px 30px;
-            text-align: center;
-            min-width: 120px;
-            transition: all 0.3s ease;
-        }
-
-        .counter:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,0.25);
-        }
-
-        .counter-number {
-            display: block;
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-
-        .counter-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        .counter.pending .counter-number { color: #ff6b6b; }
-        .counter.in-progress .counter-number { color: #ffd93d; }
-        .counter.completed .counter-number { color: #6bcf7f; }
-
-        /* Seção de Filtros */
-        .filters-section {
-            background: white;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .filters-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 25px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 180px;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            padding: 12px 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .filter-group select:focus,
-        .filter-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .refresh-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            height: fit-content;
-        }
-
-        .refresh-btn:hover {
-            background: #2980b9;
-            transform: translateY(-1px);
-        }
-
-        /* Conteúdo Principal */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 25px;
-        }
-
-        .requests-list {
-            display: grid;
-            gap: 20px;
-        }
-
-        /* Cards de Solicitação */
-        .request-card {
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .request-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .request-card.status-pendente {
-            border-left: 5px solid var(--danger-color);
-            background: linear-gradient(135deg, #fff5f5, #ffffff);
-        }
-
-        .request-card.status-em-andamento {
-            border-left: 5px solid var(--warning-color);
-            background: linear-gradient(135deg, #fffbf0, #ffffff);
-        }
-
-        .request-card.status-concluido {
-            border-left: 5px solid var(--success-color);
-            background: linear-gradient(135deg, #f0fff4, #ffffff);
-        }
-
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .request-id {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-
-        .request-timestamp {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            opacity: 0.8;
-        }
-
-        .request-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .detail-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .operation-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .priority-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .priority-tag.urgente {
-            background: var(--danger-color);
-            animation: pulse 2s infinite;
-        }
-
-        .priority-tag.moderado {
-            background: var(--warning-color);
-        }
-
-        .priority-tag.normal {
-            background: var(--success-color);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .observation-section {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(0,0,0,0.02);
-            border-radius: 8px;
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .observation-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .observation-text {
-            font-style: italic;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        /* Ações dos Cards */
-        .card-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #219a52;
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--text-secondary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6c7d;
-            transform: translateY(-1px);
-        }
-
-        /* Estado Vazio */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            margin: 10% auto;
-            padding: 0;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--border-color);
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        .modal-body textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .modal-body textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .modal-footer {
-            padding: 20px 25px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.9);
-            display: none; /* Começa escondido */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Notificações */
-        #notifications {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .notification {
-            background: var(--success-color);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards;
-            max-width: 350px;
-            min-width: 250px;
-        }
-
-        .notification.error { background: var(--danger-color); }
-        .notification.warning { background: var(--warning-color); }
-        .notification.info { background: var(--primary-color); }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideOutRight {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(100%); }
-        }
+            --primary-color: #3498db; --secondary-color: #2c3e50; --success-color: #27ae60;
+            --warning-color: #f39c12; --danger-color: #e74c3c; --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%  );
+            --card-background: #ffffff; --text-primary: #2c3e50; --text-secondary: #6c757d;
+            --border-color: #e9ecef; --shadow: 0 2px 10px rgba(0,0,0,0.1); --border-radius: 12px;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; color: var(--text-primary); }
+        .header { background: var(--background-gradient); color: white; padding: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain  )"/></svg>'); pointer-events: none; }
+        .header-content { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 20px; }
+        .logo { display: flex; align-items: center; gap: 15px; }
+        .logo-icon { font-size: 3rem; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+        .logo-text h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .logo-text p { font-size: 1.1rem; opacity: 0.9; font-weight: 300; }
+        .status-counters { display: flex; gap: 20px; flex-wrap: wrap; }
+        .counter { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--border-radius); padding: 20px 30px; text-align: center; min-width: 120px; transition: all 0.3s ease; }
+        .counter:hover { transform: translateY(-2px); background: rgba(255,255,255,0.25); }
+        .counter-number { display: block; font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+        .counter-label { font-size: 0.9rem; opacity: 0.9; font-weight: 500; }
+        .counter.pending .counter-number { color: #ff6b6b; } .counter.in-progress .counter-number { color: #ffd93d; } .counter.completed .counter-number { color: #6bcf7f; }
+        .filters-section { background: white; padding: 25px; box-shadow: var(--shadow); border-bottom: 1px solid var(--border-color); }
+        .filters-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 25px; align-items: end; flex-wrap: wrap; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; min-width: 180px; }
+        .filter-group label { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+        .filter-group select, .filter-group input { padding: 12px 15px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; background: white; }
+        .filter-group select:focus, .filter-group input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
+        .refresh-btn { background: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; height: fit-content; }
+        .refresh-btn:hover { background: #2980b9; transform: translateY(-1px); }
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px 25px; }
+        .requests-list { display: grid; gap: 20px; }
+        .request-card { background: var(--card-background); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 25px; box-shadow: var(--shadow); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .request-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .request-card.status-pendente { border-left: 5px solid var(--danger-color); }
+        .request-card.status-em-andamento { border-left: 5px solid var(--warning-color); }
+        .request-card.status-concluido { border-left: 5px solid var(--success-color); }
+        .request-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;}
+        .request-id { font-size: 1.2rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px; }
+        .request-timestamp { font-size: 0.9rem; color: var(--text-secondary); opacity: 0.8; }
+        .request-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .detail-item { display: flex; flex-direction: column; gap: 5px; word-wrap: break-word; }
+        .detail-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-value { font-size: 1rem; font-weight: 500; color: var(--text-primary); }
+        .priority-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: white; }
+        .priority-tag.urgente { background: var(--danger-color); animation: pulse 2s infinite; }
+        .priority-tag.moderado { background: var(--warning-color); }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .card-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: var(--primary-color); color: white; } .btn-primary:hover { background: #2980b9; }
+        .btn-success { background: var(--success-color); color: white; } .btn-success:hover { background: #219a52; }
+        .btn-secondary { background: var(--text-secondary); color: white; } .btn-secondary:hover { background: #5a6c7d; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); display: none; }
+        .empty-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--text-primary); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 10% auto; padding: 0; border-radius: var(--border-radius); width: 90%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: modalSlideIn 0.3s ease; }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; color: var(--text-primary); }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease; }
+        .modal-close:hover { background: var(--border-color); }
+        .modal-body { padding: 25px; }
+        .modal-body textarea { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical; min-height: 100px; }
+        .modal-body textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
+        .modal-footer { padding: 20px 25px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; justify-content: flex-end; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid var(--border-color); border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #notifications { position: fixed; top: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
+        .notification { background: var(--success-color); color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards; max-width: 350px; min-width: 250px; }
+        .notification.error { background: var(--danger-color); } .notification.warning { background: var(--warning-color); } .notification.info { background: var(--primary-color); }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
     </style>
 </head>
 <body>
@@ -613,18 +98,9 @@
                 </div>
             </div>
             <div class="status-counters">
-                <div class="counter pending">
-                    <span class="counter-number" id="pendingCount">0</span>
-                    <span class="counter-label">Pendentes</span>
-                </div>
-                <div class="counter in-progress">
-                    <span class="counter-number" id="inProgressCount">0</span>
-                    <span class="counter-label">Em Andamento</span>
-                </div>
-                <div class="counter completed">
-                    <span class="counter-number" id="completedCount">0</span>
-                    <span class="counter-label">Concluídos</span>
-                </div>
+                <div class="counter pending"><span class="counter-number" id="pendingCount">0</span><span class="counter-label">Pendentes</span></div>
+                <div class="counter in-progress"><span class="counter-number" id="inProgressCount">0</span><span class="counter-label">Em Andamento</span></div>
+                <div class="counter completed"><span class="counter-number" id="completedCount">0</span><span class="counter-label">Concluídos</span></div>
             </div>
         </div>
     </header>
@@ -633,17 +109,12 @@
             <div class="filter-group">
                 <label for="statusFilter">Filtrar por Status:</label>
                 <select id="statusFilter">
-                    <option value="todos">Todos</option>
-                    <option value="pendente">Pendentes</option>
-                    <option value="em-andamento">Em Andamento</option>
-                    <option value="concluido">Concluídos</option>
+                    <option value="todos">Todos</option><option value="pendente">Pendentes</option><option value="em-andamento">Em Andamento</option><option value="concluido">Concluídos</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="areaFilter">Área:</label>
-                <select id="areaFilter">
-                    <option value="todos">Todas as Áreas</option>
-                </select>
+                <select id="areaFilter"><option value="todos">Todas as Áreas</option></select>
             </div>
             <div class="filter-group">
                 <label for="dateFilter">Data:</label>
@@ -654,56 +125,60 @@
     </section>
     <main class="main-content">
         <div id="requestsList" class="requests-list"></div>
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <span class="empty-icon">😔</span>
+        <div id="emptyState" class="empty-state">
+            <div class="empty-icon">📋</div>
             <h3>Nenhuma solicitação encontrada</h3>
-            <p>Verifique os filtros ou tente atualizar a página.</p>
+            <p>Ajuste os filtros ou aguarde novas solicitações</p>
         </div>
     </main>
+    <div id="observationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Adicionar Observação</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="observationText" placeholder="Adicione uma observação sobre o atendimento (opcional)..." rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancelar</button>
+                <button class="btn btn-primary" id="confirmActionBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
     <script>
-        /* --- JAVASCRIPT EMBUTIDO --- */
-        document.addEventListener(\'DOMContentLoaded\', () => {
-            // A API_URL será o endpoint do nosso proxy na Vercel
-            const API_URL = \'/api/dados\'; 
+        // ===================================================================== //
+        // ==         CÓDIGO FINAL v10 - CORRIGIDO PARA NOMES DE COLUNA       == //
+        // ===================================================================== //
+        document.addEventListener('DOMContentLoaded', () => {
+            const SHEETDB_URL = 'https://api.sheetbest.com/sheets/1cdf6b3b-0a56-4eaf-80cb-a69ae6c7557b';
             
-            // Mapeamento exato dos nomes das colunas da sua planilha
-            // ATENÇÃO: Estes nomes devem ser EXATAMENTE como estão na primeira linha da sua planilha.
-            const COLUMN_MAP = {
-                id: \'id\',
-                timestamp: \'carimbo_de_data_hora\',
-                solicitante: \'solicitante\',
-                area: \'area_solicitante\',
-                operacao: \'tipo_de_operacao\',
-                item: \'codigo_do_item\',
-                tempo: \'tempo_de_atendimento\',
-                observacao: \'observacao_opcional\',
-                localizacao: \'localizacao_opcional\',
-                status: \'status\',
-                operador: \'operador\',
-                horarioInicio: \'horarioinicio\',
-                horarioConclusao: \'horarioconclusao\',
-                observacaoOperador: \'observacaooperador\'
-            };
-
-            const loadingOverlay = document.getElementById(\'loadingOverlay\');
-            const requestsList = document.getElementById(\'requestsList\');
-            const emptyState = document.getElementById(\'emptyState\');
-            const pendingCountEl = document.getElementById(\'pendingCount\');
-            const inProgressCountEl = document.getElementById(\'inProgressCount\');
-            const completedCountEl = document.getElementById(\'completedCount\');
-            const statusFilter = document.getElementById(\'statusFilter\');
-            const areaFilter = document.getElementById(\'areaFilter\');
-            const dateFilter = document.getElementById(\'dateFilter\');
-            const refreshBtn = document.getElementById(\'refreshBtn\');
+            const loadingOverlay = document.getElementById('loadingOverlay' );
+            const requestsList = document.getElementById('requestsList');
+            const emptyState = document.getElementById('emptyState');
+            const pendingCountEl = document.getElementById('pendingCount');
+            const inProgressCountEl = document.getElementById('inProgressCount');
+            const completedCountEl = document.getElementById('completedCount');
+            const statusFilter = document.getElementById('statusFilter');
+            const areaFilter = document.getElementById('areaFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const observationModal = document.getElementById('observationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const observationText = document.getElementById('observationText');
+            const confirmActionBtn = document.getElementById('confirmActionBtn');
+            const modalCloseBtn = observationModal.querySelector('.modal-close');
+            const modalCancelBtn = observationModal.querySelector('.modal-cancel');
             
             let allRequests = [];
+            let currentRequestId = null;
+            let currentAction = null;
 
-            const toggleLoading = (show) => { loadingOverlay.style.display = show ? \'flex\' : \'none\'; };
+            const toggleLoading = (show) => { loadingOverlay.style.display = show ? 'flex' : 'none'; };
 
-            const showNotification = (message, type = \'info\') => {
-                const notificationsContainer = document.getElementById(\'notifications\');
-                if (!notificationsContainer) return;
-                const notification = document.createElement(\'div\');
+            const showNotification = (message, type = 'info') => {
+                const notificationsContainer = document.getElementById('notifications');
+                const notification = document.createElement('div');
                 notification.className = `notification ${type}`;
                 notification.textContent = message;
                 notificationsContainer.appendChild(notification);
@@ -713,53 +188,56 @@
             const fetchData = async () => {
                 toggleLoading(true);
                 try {
-                    const response = await fetch(API_URL); // Chama o nosso proxy
+                    const response = await fetch(SHEETDB_URL);
                     if (!response.ok) throw new Error(`Erro de rede: ${response.status}`);
-                    const result = await response.json(); // O proxy já retorna JSON
-                    
-                    if (!result.success) {
-                        throw new Error(result.error || \'Erro desconhecido ao buscar dados do proxy.\');
-                    }
-
-                    allRequests = result.data.map(r => {
-                        const req = {};
-                        // Mapeia os dados brutos da API para os nomes de campo esperados
-                        for (const key in COLUMN_MAP) {
-                            // Usa o nome da coluna normalizado (minúsculas, sem espaços) que vem do proxy
-                            const normalizedHeader = COLUMN_MAP[key]; // Removido .toLowerCase().replace(/[^a-z0-9_]/g, \'_\');
-                            req[key] = r[normalizedHeader];
-                        }
-                        req.status = req.status ? String(req.status).toLowerCase().trim() : \'pendente\';
-                        return req;
-                    });
-
+                    const data = await response.json();
+                    allRequests = data.map(r => ({...r, status: r.status ? String(r.status).toLowerCase().trim() : 'pendente' }));
                     populateAreaFilter();
                     render();
-                    showNotification(\'Dados carregados com sucesso!\', \'success\');
+                    showNotification('Dados carregados com sucesso!', 'success');
                 } catch (error) {
-                    showNotification(`Falha ao carregar dados: ${error.message}`, \'error\');
+                    showNotification(`Falha ao carregar dados: ${error.message}`, 'error');
                     allRequests = [];
                     render();
                 } finally { toggleLoading(false); }
             };
 
+            const updateData = async (id, updatePayload) => {
+                toggleLoading(true);
+                try {
+                    const url = `${SHEETDB_URL}/id/${id}`;
+                    const response = await fetch(url, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatePayload)
+                    });
+                    if (!response.ok) throw new Error('Falha ao atualizar.');
+                    await response.json();
+                    showNotification('Atualização enviada com sucesso!', 'success');
+                    setTimeout(fetchData, 500);
+                } catch (error) {
+                    showNotification(`Falha ao atualizar: ${error.message}`, 'error');
+                    toggleLoading(false);
+                }
+            };
+
             const render = () => {
                 const filteredRequests = getFilteredRequests();
-                renderCounters(allRequests); // Contadores baseados em TODOS os dados, não nos filtrados
+                renderCounters(allRequests);
                 renderRequestsList(filteredRequests);
             };
 
             const populateAreaFilter = () => {
                 const currentArea = areaFilter.value;
-                const areas = [...new Set(allRequests.map(r => r.area).filter(Boolean))];
-                areaFilter.innerHTML = \'<option value="todos">Todas as Áreas</option>\';
+                const areas = [...new Set(allRequests.map(r => r['🏢  Área Solicitante']).filter(Boolean))];
+                areaFilter.innerHTML = '<option value="todos">Todas as Áreas</option>';
                 areas.sort().forEach(area => {
-                    const option = document.createElement(\'option\');
+                    const option = document.createElement('option');
                     option.value = area;
                     option.textContent = area;
                     areaFilter.appendChild(option);
                 });
-                if(areas.includes(currentArea)) areaFilter.value = currentArea; // Mantém a seleção se a área ainda existir
+                if(areas.includes(currentArea)) areaFilter.value = currentArea;
             };
 
             const getFilteredRequests = () => {
@@ -768,69 +246,61 @@
                 const date = dateFilter.value;
 
                 return allRequests.filter(req => {
-                    const statusMatch = status === \'todos\' || req.status === status;
-                    const areaMatch = area === \'todos\' || req.area === area;
+                    const statusMatch = status === 'todos' || req.status === status;
+                    const areaMatch = area === 'todos' || req['🏢  Área Solicitante'] === area;
                     let dateMatch = true;
-                    if (date && req.timestamp) {
+                    if (date && req['Carimbo de data/hora']) {
                         try {
-                            // O timestamp da planilha vem como "DD/MM/YYYY HH:MM:SS"
-                            const reqDateStr = req.timestamp.split(\' \')[0]; // Pega só a data "DD/MM/YYYY"
-                            const [day, month, year] = reqDateStr.split(\'/\');
+                            const reqDateStr = req['Carimbo de data/hora'].split(' ')[0];
+                            const [day, month, year] = reqDateStr.split('/');
                             const requestDate = new Date(`${year}-${month}-${day}T00:00:00`);
                             const filterDate = new Date(`${date}T00:00:00`);
                             dateMatch = requestDate.getTime() === filterDate.getTime();
-                        } catch(e) {
-                            console.warn("Erro ao parsear data do request:", req.timestamp, e);
-                            dateMatch = false; // Se der erro no parse, não considera match
-                        }
+                        } catch(e) { dateMatch = false; }
                     }
                     return statusMatch && areaMatch && dateMatch;
                 }).sort((a, b) => {
-                    // Ordena por data/hora mais recente primeiro
                     try {
-                        const dateA = new Date(a.timestamp.split(\' \')[0].split(\'/\').reverse().join(\'-\') + \'T\' + a.timestamp.split(\' \')[1]);
-                        const dateB = new Date(b.timestamp.split(\' \')[0].split(\'/\').reverse().join(\'-\') + \'T\' + b.timestamp.split(\' \')[1]);
+                        const dateA = new Date(a['Carimbo de data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + a['Carimbo de data/hora'].split(' ')[1]);
+                        const dateB = new Date(b['Carimbo de data/hora'].split(' ')[0].split('/').reverse().join('-') + 'T' + b['Carimbo de data/hora'].split(' ')[1]);
                         return dateB - dateA;
-                    } catch(e) {
-                        console.warn("Erro ao ordenar por data:", e);
-                        return 0; // Não altera a ordem se houver erro
-                    }
+                    } catch(e) { return 0; }
                 });
             };
 
             const renderCounters = (requests) => {
-                pendingCountEl.textContent = requests.filter(r => r.status === \'pendente\').length;
-                inProgressCountEl.textContent = requests.filter(r => r.status === \'em-andamento\').length;
-                completedCountEl.textContent = requests.filter(r => r.status === \'concluido\').length;
+                pendingCountEl.textContent = requests.filter(r => r.status === 'pendente').length;
+                inProgressCountEl.textContent = requests.filter(r => r.status === 'em-andamento').length;
+                completedCountEl.textContent = requests.filter(r => r.status === 'concluido').length;
             };
 
             const renderRequestsList = (requests) => {
-                requestsList.innerHTML = \'\';
+                requestsList.innerHTML = '';
                 if (requests.length === 0) {
-                    emptyState.style.display = \'block\';
+                    emptyState.style.display = 'block';
                     return;
                 }
-                emptyState.style.display = \'none\';
+                emptyState.style.display = 'none';
 
                 requests.forEach(req => {
-                    const card = document.createElement(\'div\');
+                    const card = document.createElement('div');
                     card.className = `request-card status-${req.status}`;
-                    card.dataset.id = req.id; // Adiciona o ID para futuras operações
+                    card.dataset.id = req.id;
 
-                    const priority = req.tempo || \'\';
-                    let priorityClass = \'\';
-                    if (priority.includes(\'Urgente\')) priorityClass = \'urgente\';
-                    else if (priority.includes(\'Moderado\')) priorityClass = \'moderado\';
+                    const priority = req['⏱️  Tempo de Atendimento:'] || '';
+                    let priorityClass = '';
+                    if (priority.includes('Urgente')) priorityClass = 'urgente';
+                    else if (priority.includes('Moderado')) priorityClass = 'moderado';
 
-                    let detailsHtml = \'\';
+                    let detailsHtml = '';
                     const fields = {
-                        solicitante: \'Solicitante\', area: \'Área\', operacao: \'Operação\',
-                        item: \'Item\', localizacao: \'Localização\', observacao: \'Observação\'
+                        '👤  Solicitante:': 'Solicitante', '🏢  Área Solicitante': 'Área', '📋  Tipo de Operação:': 'Operação',
+                        '🆔  Código do Item:': 'Item', '📍  Localização (opcional)': 'Localização', '💬  Observação (opcional)': 'Observação',
+                        'operador': 'Operador', 'observacaoOperador': 'Obs. Operador', 'horarioInicio': 'Início', 'horarioConclusao': 'Conclusão'
                     };
                     
                     for(const key in fields) {
-                        // Verifica se o valor existe e não é vazio antes de adicionar ao HTML
-                        if(req[key] && String(req[key]).trim() !== \'\') {
+                        if(req[key] && String(req[key]).trim() !== '') {
                             detailsHtml += `<div class="detail-item"><span class="detail-label">${fields[key]}</span><span class="detail-value">${req[key]}</span></div>`;
                         }
                     }
@@ -838,24 +308,79 @@
                     card.innerHTML = `
                         <div class="request-header">
                             <div>
-                                <div class="request-id">${req.id || \'N/A\'}</div>
-                                <div class="request-timestamp">${req.timestamp || \'\'}</div>
+                                <div class="request-id">${req.id || 'N/A'}</div>
+                                <div class="request-timestamp">${req['Carimbo de data/hora'] || ''}</div>
                             </div>
-                            ${priority ? `<div class="priority-tag ${priorityClass}">${priority}</div>` : \'\'} 
+                            ${priority ? `<div class="priority-tag ${priorityClass}">${priority}</div>` : ''}
                         </div>
                         <div class="request-details">${detailsHtml}</div>
-                        <!-- Adicionar botões de ação aqui, se necessário -->
-                        <!-- Exemplo: <div class="card-actions"><button class="btn btn-primary">Iniciar</button></div> -->
-                    `;
+                        <div class="card-actions"></div>`;
+                    
+                    const actionsContainer = card.querySelector('.card-actions');
+                    if (req.status === 'pendente') {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn btn-primary';
+                        btn.textContent = '▶️ Iniciar Atendimento';
+                        btn.onclick = () => handleAction('start', req.id);
+                        actionsContainer.appendChild(btn);
+                    } else if (req.status === 'em-andamento') {
+                        const btnObs = document.createElement('button');
+                        btnObs.className = 'btn btn-secondary';
+                        btnObs.textContent = '📝 Adicionar Observação';
+                        btnObs.onclick = () => handleAction('observe', req.id);
+                        actionsContainer.appendChild(btnObs);
+
+                        const btnDone = document.createElement('button');
+                        btnDone.className = 'btn btn-success';
+                        btnDone.textContent = '✅ Concluir Atendimento';
+                        btnDone.onclick = () => handleAction('complete', req.id);
+                        actionsContainer.appendChild(btnDone);
+                    } else {
+                        actionsContainer.innerHTML = '<span>✅ Concluído</span>';
+                    }
                     requestsList.appendChild(card);
                 });
             };
-            
-            // Event Listeners para os filtros e botão de atualização
-            [statusFilter, areaFilter, dateFilter].forEach(el => el.addEventListener(\'change\', render));
-            refreshBtn.addEventListener(\'click\', fetchData);
 
-            // Carrega os dados na inicialização
+            const handleAction = (action, id) => {
+                currentAction = action;
+                currentRequestId = id;
+                const request = allRequests.find(r => r.id === id);
+
+                if (action === 'start') {
+                    updateData(id, { status: 'em-andamento', horarioInicio: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
+                } else if (action === 'complete') {
+                     updateData(id, { status: 'concluido', horarioConclusao: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) });
+                } else if (action === 'observe') {
+                    modalTitle.textContent = `Adicionar Observação para ${request.id}`;
+                    observationText.value = request.observacaoOperador || '';
+                    observationModal.style.display = 'block';
+                }
+            };
+            
+            const closeModal = () => {
+                observationModal.style.display = 'none';
+                observationText.value = '';
+                currentRequestId = null;
+                currentAction = null;
+            };
+
+            confirmActionBtn.addEventListener('click', () => {
+                if (currentAction === 'observe' && currentRequestId !== null) {
+                    updateData(currentRequestId, { observacaoOperador: observationText.value });
+                }
+                closeModal();
+            });
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalCancelBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == observationModal) closeModal();
+            });
+            
+            [statusFilter, areaFilter, dateFilter].forEach(el => el.addEventListener('change', render));
+            refreshBtn.addEventListener('click', fetchData);
+
             fetchData();
         });
     </script>
