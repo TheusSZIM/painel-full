@@ -382,6 +382,7 @@
             refreshBtn.addEventListener('click', fetchData);
 
             fetchData();
+            setInterval(fetchData, 60000); // Atualiza a cada 30 segundos
         });
     </script>
 </body>
