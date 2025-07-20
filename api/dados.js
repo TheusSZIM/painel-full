@@ -1,22 +1,82 @@
-// Arquivo: api/dados.js
+// ================================================================= //
+// ==    Proxy Definitivo - API Nativa do Google Sheets v1.0    == //
+// ==    Solução robusta e sem limites para o painel            == //
+// ================================================================= //
 
 export default async function handler(req, res) {
+  // Configurações da API do Google Sheets
+  const SPREADSHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
+  const API_KEY = 'AIzaSyD2IxYXG8vhOLgk8MWPifObs8v7a6O1LNA';
+  const SHEET_NAME = 'Página1'; // Nome da aba na planilha
+  
+  // Habilita CORS para permitir acesso do frontend
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Responde às requisições OPTIONS (preflight)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
-    // SUBSTITUA PELA SUA URL REAL
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk5BI6QE-iGcyTpIYK67a7vPEaEGaRtieMAP5y9rWSMA1zdNq0ZHWh72m3W2q9f7Z-Kg/exec'; 
+    // Constrói a URL da API do Google Sheets
+    const range = `${SHEET_NAME}!A:Z`; // Lê todas as colunas da aba
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
     
-    const response = await fetch(GOOGLE_SCRIPT_URL);
+    console.log('Fazendo requisição para:', url);
+    
+    // Faz a requisição para a API do Google
+    const response = await fetch(url);
+    
     if (!response.ok) {
-      throw new Error(`Erro na API do Google: ${response.statusText}`);
+      throw new Error(`Erro da API do Google: ${response.status} - ${response.statusText}`);
     }
     
     const data = await response.json();
     
-    // Adiciona o header CORS para permitir o acesso
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.status(200).json(data);
-
+    // Verifica se há dados na planilha
+    if (!data.values || data.values.length === 0) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+    
+    // Processa os dados da planilha
+    const headers = data.values[0]; // Primeira linha são os cabeçalhos
+    const rows = data.values.slice(1); // Demais linhas são os dados
+    
+    // Converte os dados para formato de objetos
+    const formattedData = rows.map((row, index) => {
+      const rowData = {};
+      
+      headers.forEach((header, columnIndex) => {
+        // Normaliza o nome da coluna para facilitar o acesso
+        const normalizedHeader = header.toString().toLowerCase().trim();
+        rowData[normalizedHeader] = row[columnIndex] || '';
+      });
+      
+      // Adiciona o índice da linha para referência
+      rowData['row_index'] = index + 2; // +2 porque começamos da linha 2 (após cabeçalho)
+      
+      return rowData;
+    });
+    
+    console.log(`Dados processados: ${formattedData.length} registros`);
+    
+    // Retorna os dados formatados
+    return res.status(200).json({
+      success: true,
+      data: formattedData,
+      total: formattedData.length,
+      timestamp: new Date().toISOString()
+    });
+    
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Erro no proxy:', error);
+    
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 }
