@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Operador - Empilhadeira</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>🚛</text></svg>">
     <style>
         /* --- CSS EMBUTIDO --- */
         * {
@@ -29,7 +29,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             color: var(--text-primary);
@@ -45,13 +45,13 @@
         }
 
         .header::before {
-            content: '';
+            content: \'\';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background: url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>\');
             pointer-events: none;
         }
 
@@ -662,49 +662,48 @@
     </main>
     <script>
         /* --- JAVASCRIPT EMBUTIDO --- */
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener(\'DOMContentLoaded\', () => {
             // A API_URL será o endpoint do nosso proxy na Vercel
-            const API_URL = '/api/dados'; 
+            const API_URL = \'/api/dados\'; 
             
             // Mapeamento exato dos nomes das colunas da sua planilha
             // ATENÇÃO: Estes nomes devem ser EXATAMENTE como estão na primeira linha da sua planilha.
             const COLUMN_MAP = {
-                id: 'id',
-                timestamp: 'Carimbo de data/hora',
-                solicitante: '👤 Solicitante:',
-                area: '🏢 Área Solicitante',
-                operacao: '📋 Tipo de Operação:',
-                item: '🆔 Código do Item:',
-                tempo: '⏱️ Tempo de Atendimento:',
-                observacao: '💬 Observação (opcional)',
-                localizacao: '📍 Localização (opcional)',
-                status: 'status',
-                // Campos adicionais que podem ser atualizados via POST (se implementado)
-                operador: 'operador',
-                horarioInicio: 'horarioInicio',
-                horarioConclusao: 'horarioConclusao',
-                observacaoOperador: 'observacaoOperador'
+                id: \'id\',
+                timestamp: \'carimbo_de_data_hora\',
+                solicitante: \'👤_solicitante:\',
+                area: \'🏢_area_solicitante\',
+                operacao: \'📋_tipo_de_operacao:\',
+                item: \'🆔_codigo_do_item:\',
+                tempo: \'⏱️_tempo_de_atendimento:\',
+                observacao: \'💬_observacao_opcional\',
+                localizacao: \'📍_localizacao_opcional\',
+                status: \'status\',
+                operador: \'operador\',
+                horarioInicio: \'horarioinicio\',
+                horarioConclusao: \'horarioconclusao\',
+                observacaoOperador: \'observacaooperador\'
             };
 
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const requestsList = document.getElementById('requestsList');
-            const emptyState = document.getElementById('emptyState');
-            const pendingCountEl = document.getElementById('pendingCount');
-            const inProgressCountEl = document.getElementById('inProgressCount');
-            const completedCountEl = document.getElementById('completedCount');
-            const statusFilter = document.getElementById('statusFilter');
-            const areaFilter = document.getElementById('areaFilter');
-            const dateFilter = document.getElementById('dateFilter');
-            const refreshBtn = document.getElementById('refreshBtn');
+            const loadingOverlay = document.getElementById(\'loadingOverlay\');
+            const requestsList = document.getElementById(\'requestsList\');
+            const emptyState = document.getElementById(\'emptyState\');
+            const pendingCountEl = document.getElementById(\'pendingCount\');
+            const inProgressCountEl = document.getElementById(\'inProgressCount\');
+            const completedCountEl = document.getElementById(\'completedCount\');
+            const statusFilter = document.getElementById(\'statusFilter\');
+            const areaFilter = document.getElementById(\'areaFilter\');
+            const dateFilter = document.getElementById(\'dateFilter\');
+            const refreshBtn = document.getElementById(\'refreshBtn\');
             
             let allRequests = [];
 
-            const toggleLoading = (show) => { loadingOverlay.style.display = show ? 'flex' : 'none'; };
+            const toggleLoading = (show) => { loadingOverlay.style.display = show ? \'flex\' : \'none\'; };
 
-            const showNotification = (message, type = 'info') => {
-                const notificationsContainer = document.getElementById('notifications');
+            const showNotification = (message, type = \'info\') => {
+                const notificationsContainer = document.getElementById(\'notifications\');
                 if (!notificationsContainer) return;
-                const notification = document.createElement('div');
+                const notification = document.createElement(\'div\');
                 notification.className = `notification ${type}`;
                 notification.textContent = message;
                 notificationsContainer.appendChild(notification);
@@ -719,7 +718,7 @@
                     const result = await response.json(); // O proxy já retorna JSON
                     
                     if (!result.success) {
-                        throw new Error(result.error || 'Erro desconhecido ao buscar dados do proxy.');
+                        throw new Error(result.error || \'Erro desconhecido ao buscar dados do proxy.\');
                     }
 
                     allRequests = result.data.map(r => {
@@ -727,18 +726,18 @@
                         // Mapeia os dados brutos da API para os nomes de campo esperados
                         for (const key in COLUMN_MAP) {
                             // Usa o nome da coluna normalizado (minúsculas, sem espaços) que vem do proxy
-                            const normalizedHeader = COLUMN_MAP[key].toLowerCase().replace(/[^a-z0-9_]/g, '_');
+                            const normalizedHeader = COLUMN_MAP[key].toLowerCase().replace(/[^a-z0-9_]/g, \'_\');
                             req[key] = r[normalizedHeader];
                         }
-                        req.status = req.status ? String(req.status).toLowerCase().trim() : 'pendente';
+                        req.status = req.status ? String(req.status).toLowerCase().trim() : \'pendente\';
                         return req;
                     });
 
                     populateAreaFilter();
                     render();
-                    showNotification('Dados carregados com sucesso!', 'success');
+                    showNotification(\'Dados carregados com sucesso!\', \'success\');
                 } catch (error) {
-                    showNotification(`Falha ao carregar dados: ${error.message}`, 'error');
+                    showNotification(`Falha ao carregar dados: ${error.message}`, \'error\');
                     allRequests = [];
                     render();
                 } finally { toggleLoading(false); }
@@ -753,9 +752,9 @@
             const populateAreaFilter = () => {
                 const currentArea = areaFilter.value;
                 const areas = [...new Set(allRequests.map(r => r.area).filter(Boolean))];
-                areaFilter.innerHTML = '<option value="todos">Todas as Áreas</option>';
+                areaFilter.innerHTML = \'<option value="todos">Todas as Áreas</option>\';
                 areas.sort().forEach(area => {
-                    const option = document.createElement('option');
+                    const option = document.createElement(\'option\');
                     option.value = area;
                     option.textContent = area;
                     areaFilter.appendChild(option);
@@ -769,14 +768,14 @@
                 const date = dateFilter.value;
 
                 return allRequests.filter(req => {
-                    const statusMatch = status === 'todos' || req.status === status;
-                    const areaMatch = area === 'todos' || req.area === area;
+                    const statusMatch = status === \'todos\' || req.status === status;
+                    const areaMatch = area === \'todos\' || req.area === area;
                     let dateMatch = true;
                     if (date && req.timestamp) {
                         try {
                             // O timestamp da planilha vem como "DD/MM/YYYY HH:MM:SS"
-                            const reqDateStr = req.timestamp.split(' ')[0]; // Pega só a data "DD/MM/YYYY"
-                            const [day, month, year] = reqDateStr.split('/');
+                            const reqDateStr = req.timestamp.split(\' \')[0]; // Pega só a data "DD/MM/YYYY"
+                            const [day, month, year] = reqDateStr.split(\'/\');
                             const requestDate = new Date(`${year}-${month}-${day}T00:00:00`);
                             const filterDate = new Date(`${date}T00:00:00`);
                             dateMatch = requestDate.getTime() === filterDate.getTime();
@@ -789,8 +788,8 @@
                 }).sort((a, b) => {
                     // Ordena por data/hora mais recente primeiro
                     try {
-                        const dateA = new Date(a.timestamp.split(' ')[0].split('/').reverse().join('-') + 'T' + a.timestamp.split(' ')[1]);
-                        const dateB = new Date(b.timestamp.split(' ')[0].split('/').reverse().join('-') + 'T' + b.timestamp.split(' ')[1]);
+                        const dateA = new Date(a.timestamp.split(\' \')[0].split(\'/\').reverse().join(\'-\') + \'T\' + a.timestamp.split(\' \')[1]);
+                        const dateB = new Date(b.timestamp.split(\' \')[0].split(\'/\').reverse().join(\'-\') + \'T\' + b.timestamp.split(\' \')[1]);
                         return dateB - dateA;
                     } catch(e) {
                         console.warn("Erro ao ordenar por data:", e);
@@ -800,38 +799,38 @@
             };
 
             const renderCounters = (requests) => {
-                pendingCountEl.textContent = requests.filter(r => r.status === 'pendente').length;
-                inProgressCountEl.textContent = requests.filter(r => r.status === 'em-andamento').length;
-                completedCountEl.textContent = requests.filter(r => r.status === 'concluido').length;
+                pendingCountEl.textContent = requests.filter(r => r.status === \'pendente\').length;
+                inProgressCountEl.textContent = requests.filter(r => r.status === \'em-andamento\').length;
+                completedCountEl.textContent = requests.filter(r => r.status === \'concluido\').length;
             };
 
             const renderRequestsList = (requests) => {
-                requestsList.innerHTML = '';
+                requestsList.innerHTML = \'\';
                 if (requests.length === 0) {
-                    emptyState.style.display = 'block';
+                    emptyState.style.display = \'block\';
                     return;
                 }
-                emptyState.style.display = 'none';
+                emptyState.style.display = \'none\';
 
                 requests.forEach(req => {
-                    const card = document.createElement('div');
+                    const card = document.createElement(\'div\');
                     card.className = `request-card status-${req.status}`;
                     card.dataset.id = req.id; // Adiciona o ID para futuras operações
 
-                    const priority = req.tempo || '';
-                    let priorityClass = '';
-                    if (priority.includes('Urgente')) priorityClass = 'urgente';
-                    else if (priority.includes('Moderado')) priorityClass = 'moderado';
+                    const priority = req.tempo || \'\';
+                    let priorityClass = \'\';
+                    if (priority.includes(\'Urgente\')) priorityClass = \'urgente\';
+                    else if (priority.includes(\'Moderado\')) priorityClass = \'moderado\';
 
-                    let detailsHtml = '';
+                    let detailsHtml = \'\';
                     const fields = {
-                        solicitante: 'Solicitante', area: 'Área', operacao: 'Operação',
-                        item: 'Item', localizacao: 'Localização', observacao: 'Observação'
+                        solicitante: \'Solicitante\', area: \'Área\', operacao: \'Operação\',
+                        item: \'Item\', localizacao: \'Localização\', observacao: \'Observação\'
                     };
                     
                     for(const key in fields) {
                         // Verifica se o valor existe e não é vazio antes de adicionar ao HTML
-                        if(req[key] && String(req[key]).trim() !== '') {
+                        if(req[key] && String(req[key]).trim() !== \'\') {
                             detailsHtml += `<div class="detail-item"><span class="detail-label">${fields[key]}</span><span class="detail-value">${req[key]}</span></div>`;
                         }
                     }
@@ -839,10 +838,10 @@
                     card.innerHTML = `
                         <div class="request-header">
                             <div>
-                                <div class="request-id">${req.id || 'N/A'}</div>
-                                <div class="request-timestamp">${req.timestamp || ''}</div>
+                                <div class="request-id">${req.id || \'N/A\'}</div>
+                                <div class="request-timestamp">${req.timestamp || \'\'}</div>
                             </div>
-                            ${priority ? `<div class="priority-tag ${priorityClass}">${priority}</div>` : ''}
+                            ${priority ? `<div class="priority-tag ${priorityClass}">${priority}</div>` : \'\'}
                         </div>
                         <div class="request-details">${detailsHtml}</div>
                         <!-- Adicionar botões de ação aqui, se necessário -->
@@ -853,8 +852,8 @@
             };
             
             // Event Listeners para os filtros e botão de atualização
-            [statusFilter, areaFilter, dateFilter].forEach(el => el.addEventListener('change', render));
-            refreshBtn.addEventListener('click', fetchData);
+            [statusFilter, areaFilter, dateFilter].forEach(el => el.addEventListener(\'change\', render));
+            refreshBtn.addEventListener(\'click\', fetchData);
 
             // Carrega os dados na inicialização
             fetchData();
