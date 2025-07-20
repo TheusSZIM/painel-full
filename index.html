@@ -671,13 +671,13 @@
             const COLUMN_MAP = {
                 id: \'id\',
                 timestamp: \'carimbo_de_data_hora\',
-                solicitante: \'👤_solicitante:\',
-                area: \'🏢_area_solicitante\',
-                operacao: \'📋_tipo_de_operacao:\',
-                item: \'🆔_codigo_do_item:\',
-                tempo: \'⏱️_tempo_de_atendimento:\',
-                observacao: \'💬_observacao_opcional\',
-                localizacao: \'📍_localizacao_opcional\',
+                solicitante: \'solicitante\',
+                area: \'area_solicitante\',
+                operacao: \'tipo_de_operacao\',
+                item: \'codigo_do_item\',
+                tempo: \'tempo_de_atendimento\',
+                observacao: \'observacao_opcional\',
+                localizacao: \'localizacao_opcional\',
                 status: \'status\',
                 operador: \'operador\',
                 horarioInicio: \'horarioinicio\',
@@ -726,7 +726,7 @@
                         // Mapeia os dados brutos da API para os nomes de campo esperados
                         for (const key in COLUMN_MAP) {
                             // Usa o nome da coluna normalizado (minúsculas, sem espaços) que vem do proxy
-                            const normalizedHeader = COLUMN_MAP[key].toLowerCase().replace(/[^a-z0-9_]/g, \'_\');
+                            const normalizedHeader = COLUMN_MAP[key]; // Removido .toLowerCase().replace(/[^a-z0-9_]/g, \'_\');
                             req[key] = r[normalizedHeader];
                         }
                         req.status = req.status ? String(req.status).toLowerCase().trim() : \'pendente\';
