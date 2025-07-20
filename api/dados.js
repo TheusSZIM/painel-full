@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   // Configurações da API do Google Sheets
   const SPREADSHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
   const API_KEY = 'AIzaSyD2IxYXG8vhOLgk8MWPifObs8v7a6O1LNA';
-  const SHEET_NAME = 'Dados'; // Nome da aba na planilha
+  const SHEET_NAME = 'Página1'; // Nome da aba na planilha
   
   // Habilita CORS para permitir acesso do frontend
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,7 +50,12 @@ export default async function handler(req, res) {
       
       headers.forEach((header, columnIndex) => {
         // Normaliza o nome da coluna para facilitar o acesso
-        const normalizedHeader = header.toString().toLowerCase().trim();
+        // Remove emojis, caracteres especiais e substitui espaços por underscores
+        const normalizedHeader = header.toString()
+                                     .toLowerCase()
+                                     .replace(/[^a-z0-9\s]/g, '') // Remove caracteres não alfanuméricos (exceto espaços)
+                                     .trim()
+                                     .replace(/\s+/g, '_'); // Substitui espaços por underscores
         rowData[normalizedHeader] = row[columnIndex] || '';
       });
       
@@ -80,3 +85,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+
