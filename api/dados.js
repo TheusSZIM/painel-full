@@ -3,7 +3,7 @@
 // ==    Solução robusta e sem limites para o painel            == //
 // ================================================================= //
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Configurações da API do Google Sheets
   const SPREADSHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
   const API_KEY = 'AIzaSyD2IxYXG8vhOLgk8MWPifObs8v7a6O1LNA';
@@ -84,4 +84,4 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString()
     });
   }
-}
+};
