@@ -185,22 +185,38 @@
                 setTimeout(() => { if(notification.parentNode) notification.parentNode.removeChild(notification); }, 3000);
             };
 
-            const fetchData = async () => {
-                toggleLoading(true);
-                try {
-                    const response = await fetch(SHEETDB_URL);
-                    if (!response.ok) throw new Error(`Erro de rede: ${response.status}`);
-                    const data = await response.json();
-                    allRequests = data.map(r => ({...r, status: r.status ? String(r.status).toLowerCase().trim() : 'pendente' }));
-                    populateAreaFilter();
-                    render();
-                    showNotification('Dados carregados com sucesso!', 'success');
-                } catch (error) {
-                    showNotification(`Falha ao carregar dados: ${error.message}`, 'error');
-                    allRequests = [];
-                    render();
-                } finally { toggleLoading(false); }
-            };
+           const updateData = async (id, novosDados) => {
+    toggleLoading(true);
+    try {
+        // Monta o corpo da requisição no formato que nossa API espera
+        const payload = {
+            id: id,
+            novosDados: novosDados
+        };
+
+        // Envia a requisição PUT para a nossa API
+        const response = await fetch(API_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Necessário para o Apps Script
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Falha na requisição de atualização.');
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            showNotification('Atualização enviada com sucesso!', 'success');
+            setTimeout(fetchData, 500); // Recarrega os dados
+        } else {
+            throw new Error(result.message || 'Erro ao atualizar na API');
+        }
+
+    } catch (error) {
+        showNotification(`Falha ao atualizar: ${error.message}`, 'error');
+        toggleLoading(false);
+    }
+};
 
             const updateData = async (id, updatePayload) => {
                 toggleLoading(true);
@@ -387,6 +403,7 @@
     </script>
 </body>
 </html>
+
 
 
 
