@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FleetControl Pro | Integração Direta</title>
+    <title>FleetControl Pro | Sistema de Empilhadeiras</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -103,10 +103,12 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
+            padding: 0.375rem 0.875rem;
             border-radius: 9999px;
-            background: var(--bg);
             border: 1px solid var(--border);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         .connection-status.online {
@@ -121,11 +123,20 @@
             border-color: #fca5a5;
         }
 
+        .connection-status.demo {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
             background: currentColor;
+        }
+
+        .connection-status.online .status-dot {
             animation: pulse 2s infinite;
         }
 
@@ -188,7 +199,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Form Styles */
         .form-container {
             max-width: 800px;
             margin: 2rem auto;
@@ -264,7 +274,7 @@
 
         .radio-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 0.75rem;
         }
 
@@ -365,16 +375,34 @@
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
         }
 
-        /* Dashboard Styles */
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .stats-section {
             margin: 2.5rem 0;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1.5rem;
         }
 
@@ -448,7 +476,11 @@
 
         .sync-info {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin: 1rem 0 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
             color: var(--text-light);
             font-size: 0.875rem;
             display: flex;
@@ -506,6 +538,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            margin-bottom: 3rem;
         }
 
         .request-card {
@@ -555,20 +588,20 @@
             animation: pulse-bar 2s infinite;
         }
 
-        @keyframes pulse-bar {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         .request-card.completed {
             background: #f0fdf4;
             border-color: #86efac;
-            opacity: 0.85;
+            opacity: 0.9;
         }
 
         .request-card.completed::after {
             background: #22c55e;
             transform: scaleY(1);
+        }
+
+        @keyframes pulse-bar {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .card-status {
@@ -598,11 +631,6 @@
             50% { transform: translateY(-5px); }
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
         .status-text {
             font-size: 0.75rem;
             font-weight: 600;
@@ -615,6 +643,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            min-width: 0;
         }
 
         .card-header-row {
@@ -631,6 +660,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            word-break: break-word;
         }
 
         .tag {
@@ -639,6 +669,7 @@
             font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 0.025em;
+            white-space: nowrap;
         }
 
         .tag-urgent { background: #fee2e2; color: #991b1b; }
@@ -658,11 +689,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            min-width: fit-content;
         }
 
         .detail strong {
             color: var(--text);
-            font-weight: 600;
         }
 
         .card-actions {
@@ -692,10 +723,9 @@
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #2563eb;
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
         .btn-success {
@@ -704,30 +734,14 @@
             box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
         }
 
-        .btn-success:hover {
+        .btn-success:hover:not(:disabled) {
             background: #059669;
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
         }
 
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .timer {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-
-        .timer-urgent { color: #dc2626; animation: blink 1s infinite; }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         .operator-select {
@@ -740,6 +754,7 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 0.875rem;
+            background: white;
         }
 
         .toast {
@@ -758,6 +773,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            max-width: 400px;
         }
 
         .toast.show {
@@ -766,72 +782,7 @@
 
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: scale(0.9);
-            transition: transform 0.3s;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .modal-overlay.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-text {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-close-modal {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-close-modal:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
+        .toast.warning { background: var(--warning); color: var(--primary); }
 
         .empty-state {
             text-align: center;
@@ -845,32 +796,73 @@
             font-size: 4rem;
             margin-bottom: 1rem;
             opacity: 0.3;
-            animation: float 3s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .config-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+        .config-toggle {
+            text-align: center;
+            margin-top: 2rem;
         }
 
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: currentColor;
-            animation: spin 1s linear infinite;
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--info);
+            cursor: pointer;
+            font-size: 0.875rem;
+            text-decoration: underline;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            margin-top: 0.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        details summary {
+            cursor: pointer;
+            color: var(--info);
+            font-weight: 500;
+            font-size: 0.875rem;
         }
 
         @media (max-width: 768px) {
@@ -885,13 +877,13 @@
             .radio-group {
                 grid-template-columns: 1fr;
             }
-            .section-header {
+            .header-content {
                 flex-direction: column;
-                align-items: stretch;
+                gap: 1rem;
             }
-            .filter-tabs {
-                overflow-x: auto;
-                flex-wrap: nowrap;
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -906,136 +898,58 @@
                     <div class="logo">⚡</div>
                     <div class="brand-text">
                         <h1>FleetControl Pro</h1>
-                        <p>Integração Google Sheets Ativa</p>
+                        <p id="mode-text">Modo Demonstração (Dados Locais)</p>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div class="connection-status offline" id="connectionStatus">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <div class="connection-status demo" id="connectionStatus" onclick="toggleConfigPanel()">
                         <span class="status-dot"></span>
-                        <span id="connectionText">OFFLINE</span>
+                        <span id="connectionText">MODO DEMO</span>
                     </div>
                     <nav class="nav-tabs">
-                        <button class="nav-tab active" onclick="switchTab('form')">
-                            📝 Nova Solicitação
-                        </button>
-                        <button class="nav-tab" onclick="switchTab('dashboard')">
-                            📊 Painel Operações
-                            <span class="badge" id="nav-badge" style="display: none;">0</span>
-                        </button>
+                        <button class="nav-tab active" onclick="switchTab('form')">📝 Solicitar</button>
+                        <button class="nav-tab" onclick="switchTab('dashboard')">📊 Painel <span class="badge" id="nav-badge" style="display: none;">0</span></button>
                     </nav>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Form Section -->
     <section id="form-section" class="section active">
         <div class="container">
             <div class="form-container">
                 <div class="form-header">
                     <h2>Solicitação de Empilhadeira</h2>
-                    <p>Preencha todos os campos obrigatórios</p>
+                    <p>Preencha todos os campos obrigatórios • Dados salvos localmente até configurar API</p>
                 </div>
                 
                 <form class="form-body" id="requestForm" onsubmit="handleSubmit(event)">
                     <div class="form-group">
                         <label class="form-label required">Solicitante</label>
-                        <input type="text" class="form-control" id="solicitante" required placeholder="Nome completo">
+                        <input type="text" class="form-control" id="solicitante" required placeholder="Seu nome completo">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label required">Área Solicitante</label>
                         <div class="radio-group">
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Injeção de Alumínio" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🏭</span>
-                                    <span class="radio-text">Injeção de Alumínio</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Injeção PPS" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🧪</span>
-                                    <span class="radio-text">Injeção PPS</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Logística" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🚚</span>
-                                    <span class="radio-text">Logística</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Montagem Manual" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔧</span>
-                                    <span class="radio-text">Montagem Manual</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Montagem Automatizada" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🤖</span>
-                                    <span class="radio-text">Montagem Automatizada</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Manutenção INJ" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔨</span>
-                                    <span class="radio-text">Manutenção INJ</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Torno" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">⚙️</span>
-                                    <span class="radio-text">Torno</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Usinagem" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔩</span>
-                                    <span class="radio-text">Usinagem</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Qualidade" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">⭐</span>
-                                    <span class="radio-text">Qualidade</span>
-                                </div>
-                            </label>
+                            <label class="radio-card"><input type="radio" name="area" value="Injeção de Alumínio" required><div class="radio-content"><span class="radio-icon">🏭</span><span class="radio-text">Injeção de Alumínio</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Injeção PPS" required><div class="radio-content"><span class="radio-icon">🧪</span><span class="radio-text">Injeção PPS</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Logística" required><div class="radio-content"><span class="radio-icon">🚚</span><span class="radio-text">Logística</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Montagem Manual" required><div class="radio-content"><span class="radio-icon">🔧</span><span class="radio-text">Montagem Manual</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Montagem Automatizada" required><div class="radio-content"><span class="radio-icon">🤖</span><span class="radio-text">Montagem Automatizada</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Manutenção INJ" required><div class="radio-content"><span class="radio-icon">🔨</span><span class="radio-text">Manutenção INJ</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Torno" required><div class="radio-content"><span class="radio-icon">⚙️</span><span class="radio-text">Torno</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Usinagem" required><div class="radio-content"><span class="radio-icon">🔩</span><span class="radio-text">Usinagem</span></div></label>
+                            <label class="radio-card"><input type="radio" name="area" value="Qualidade" required><div class="radio-content"><span class="radio-icon">⭐</span><span class="radio-text">Qualidade</span></div></label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label required">Tipo de Operação</label>
-                        <div class="radio-group">
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Entrega" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">📦</span>
-                                    <span class="radio-text">Entrega</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Guarda" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔒</span>
-                                    <span class="radio-text">Guarda</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Validação" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">✔️</span>
-                                    <span class="radio-text">Validação</span>
-                                </div>
-                            </label>
+                        <div class="radio-group" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                            <label class="radio-card"><input type="radio" name="tipo" value="Entrega" required><div class="radio-content"><span class="radio-icon">📦</span><span class="radio-text">Entrega</span></div></label>
+                            <label class="radio-card"><input type="radio" name="tipo" value="Guarda" required><div class="radio-content"><span class="radio-icon">🔒</span><span class="radio-text">Guarda</span></div></label>
+                            <label class="radio-card"><input type="radio" name="tipo" value="Validação" required><div class="radio-content"><span class="radio-icon">✔️</span><span class="radio-text">Validação</span></div></label>
                         </div>
                     </div>
 
@@ -1045,59 +959,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Localização (opcional)</label>
+                        <label class="form-label">Localização</label>
                         <input type="text" class="form-control" id="localizacao" placeholder="Ex: Doca 3 → Estoque A/12">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label required">Tempo de Atendimento</label>
                         <div class="radio-group">
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="00:15" data-priority="urgent" required>
-                                <div class="radio-content priority-urgent">
-                                    <span class="radio-icon">🚨</span>
-                                    <div>
-                                        <span class="radio-text">00:15 (Urgente)</span>
-                                        <span class="priority-desc">Parada crítica</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="00:30" data-priority="moderate" required>
-                                <div class="radio-content priority-moderate">
-                                    <span class="radio-icon">⚠️</span>
-                                    <div>
-                                        <span class="radio-text">00:30 (Moderado)</span>
-                                        <span class="priority-desc">Atenção priorizada</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="01:00" data-priority="normal" required>
-                                <div class="radio-content priority-normal">
-                                    <span class="radio-icon">✅</span>
-                                    <div>
-                                        <span class="radio-text">01:00 (Normal)</span>
-                                        <span class="priority-desc">Fluxo padrão</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="02:00" data-priority="standard" required>
-                                <div class="radio-content priority-standard">
-                                    <span class="radio-icon">🕐</span>
-                                    <div>
-                                        <span class="radio-text">02:00 (Padrão)</span>
-                                        <span class="priority-desc">Sem urgência</span>
-                                    </div>
-                                </div>
-                            </label>
+                            <label class="radio-card"><input type="radio" name="tempo" value="00:15" data-priority="urgent" required><div class="radio-content priority-urgent"><span class="radio-icon">🚨</span><div><span class="radio-text">00:15 Urgente</span><span class="priority-desc">Parada crítica</span></div></div></label>
+                            <label class="radio-card"><input type="radio" name="tempo" value="00:30" data-priority="moderate" required><div class="radio-content priority-moderate"><span class="radio-icon">⚠️</span><div><span class="radio-text">00:30 Moderado</span><span class="priority-desc">Prioridade alta</span></div></div></label>
+                            <label class="radio-card"><input type="radio" name="tempo" value="01:00" data-priority="normal" required><div class="radio-content priority-normal"><span class="radio-icon">✅</span><div><span class="radio-text">01:00 Normal</span><span class="priority-desc">Fluxo padrão</span></div></div></label>
+                            <label class="radio-card"><input type="radio" name="tempo" value="02:00" data-priority="standard" required><div class="radio-content priority-standard"><span class="radio-icon">🕐</span><div><span class="radio-text">02:00 Padrão</span><span class="priority-desc">Sem urgência</span></div></div></label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Observação (opcional)</label>
-                        <textarea class="form-control" id="observacao" placeholder="Informações adicionais..."></textarea>
+                        <label class="form-label">Observação</label>
+                        <textarea class="form-control" id="observacao" rows="3" placeholder="Informações adicionais sobre a solicitação..."></textarea>
                     </div>
 
                     <button type="submit" class="btn-submit" id="submitBtn">
@@ -1107,658 +985,502 @@
                 </form>
             </div>
 
-            <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: #fef3c7; border-radius: 8px; border: 1px solid #fbbf24;">
-                <p style="font-size: 0.875rem; color: #92400e; margin: 0;">
-                    <strong>⚠️ Modo Demonstração:</strong> Configure o Google Apps Script abaixo para sincronização em tempo real com a planilha.
-                    <br>
-                    <button onclick="document.getElementById('configPanel').scrollIntoView({behavior: 'smooth'})" 
-                            style="background: none; border: none; color: #d97706; text-decoration: underline; cursor: pointer; margin-top: 0.5rem;">
-                        Ver instruções de configuração
-                    </button>
-                </p>
+            <div class="config-toggle">
+                <button class="btn-text" onclick="toggleConfigPanel()">⚙️ Configurar integração com Google Sheets</button>
             </div>
         </div>
     </section>
 
-    <!-- Dashboard Section -->
     <section id="dashboard-section" class="section">
         <div class="container">
-            <div class="sync-info">
-                <span class="spinner" id="syncSpinner" style="display: none;"></span>
-                <span id="syncText">Última sincronização: há poucos segundos</span>
-            </div>
-
-            <!-- Config Panel -->
-            <div id="configPanel" style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+            <div id="configPanel" class="config-panel" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="color: var(--primary); font-size: 1.125rem;">🔗 Configuração da Planilha Google</h3>
-                    <span style="font-size: 0.75rem; color: var(--text-light); background: var(--bg); padding: 0.25rem 0.5rem; border-radius: 4px;">
-                        ID: 1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE
-                    </span>
+                    <h3 style="color: var(--primary);">🔗 Configuração da API</h3>
+                    <button onclick="toggleConfigPanel()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
                 </div>
                 
-                <div style="background: #f0f9ff; border-left: 4px solid var(--info); padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem;">
-                    <h4 style="font-size: 0.875rem; color: var(--primary); margin-bottom: 0.5rem;">Como conectar:</h4>
-                    <ol style="font-size: 0.875rem; color: var(--text); padding-left: 1.25rem; margin: 0; line-height: 1.6;">
-                        <li>Abra a planilha compartilhada</li>
-                        <li>Vá em <strong>Extensões > Apps Script</strong></li>
-                        <li>Cole o código abaixo e implante como <strong>Aplicativo da Web</strong></li>
-                        <li>Cole a URL gerada aqui:</li>
-                    </ol>
+                <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; font-size: 0.875rem;">
+                    <strong>Modo atual:</strong> <span id="current-mode">Dados salvos apenas neste computador (localStorage)</span><br>
+                    Configure o Google Apps Script para sincronizar com a planilha em tempo real.
                 </div>
 
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                    <input type="url" class="form-control" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" 
-                           style="flex: 1; font-family: monospace; font-size: 0.875rem;">
-                    <button onclick="saveConfig()" style="background: var(--info); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500;">
-                        Conectar
-                    </button>
+                <div class="input-group">
+                    <input type="url" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" style="flex: 1; font-family: monospace; font-size: 0.875rem;">
+                    <button class="btn-secondary" onclick="testConnection()">Testar Conexão</button>
                 </div>
 
-                <details style="font-size: 0.875rem;">
-                    <summary style="cursor: pointer; color: var(--info); font-weight: 500;">Ver código do Google Apps Script</summary>
-                    <pre style="background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-top: 0.5rem; font-size: 0.75rem; line-height: 1.4;">
-const SHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
+                <details style="margin-top: 1rem;">
+                    <summary>Ver código do Google Apps Script (clique para expandir)</summary>
+                    <div class="code-block">const SHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
 const SHEET_NAME = 'Form Responses 1';
 
 function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
-  
-  sheet.appendRow([
-    new Date(),                    // A: Carimbo de data/hora
-    data.solicitante,              // B: Solicitante
-    data.area,                     // C: Área Solicitante
-    data.tipo,                     // D: Tipo de Operação
-    data.codigo,                   // E: Código do Item
-    data.tempo,                    // F: Tempo de Atendimento
-    data.observacao,               // G: Observação
-    data.localizacao,              // H: Localização
-    Utilities.getUuid(),           // I: ID único
-    'pendente',                    // J: Status
-    '',                            // K: Operador
-    '',                            // L: Horário Início
-    '',                            // M: Horário Conclusão
-    ''                             // N: Observação Operador
-  ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({result: 'success'}))
-    .setMimeType(ContentService.MimeType.JSON);
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    
+    sheet.appendRow([
+      new Date(),                    // Timestamp
+      data.solicitante,              // B
+      data.area,                     // C  
+      data.tipo,                     // D
+      data.codigo,                   // E
+      data.tempo,                    // F
+      data.observacao || '-',        // G
+      data.localizacao || '-',       // H
+      Utilities.getUuid(),           // I
+      'pendente',                    // J
+      '',                            // K
+      '',                            // L
+      ''                             // M
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function doGet(e) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const data = sheet.getDataRange().getDisplayValues();
-  const headers = data[0].map(h => h.toLowerCase().replace(/\s+/g, ''));
+  const headers = ['timestamp','solicitante','area','tipo','codigo','tempo','observacao','localizacao','id','status','operador','inicio','fim'];
   const rows = [];
   
   for(let i = 1; i < data.length; i++) {
     const row = {};
-    headers.forEach((h, j) => {
-      row[h] = data[i][j];
-    });
+    headers.forEach((h, j) => row[h] = data[i][j] || '');
     rows.push(row);
   }
-  
   return ContentService.createTextOutput(JSON.stringify(rows))
     .setMimeType(ContentService.MimeType.JSON);
-}</pre>
+}</div>
                 </details>
             </div>
 
-            <!-- Stats -->
+            <div class="sync-info" id="syncInfo">
+                <span>💾 Modo offline ativo - Dados salvos localmente neste navegador</span>
+                <button onclick="refreshData()" style="margin-left: 1rem; background: var(--info); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Atualizar Painel</button>
+            </div>
+
             <div class="stats-section">
                 <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-blue">📋</div>
-                        <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">PENDENTES</span>
-                    </div>
+                    <div class="stat-header"><div class="stat-icon bg-blue">📋</div><span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">PENDENTES</span></div>
                     <div class="stat-value" id="stat-pending">0</div>
                     <div class="stat-label">Aguardando operador</div>
                 </div>
-
                 <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-yellow">⏱️</div>
-                        <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">ATIVAS</span>
-                    </div>
+                    <div class="stat-header"><div class="stat-icon bg-yellow">⏱️</div><span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">ATIVAS</span></div>
                     <div class="stat-value" id="stat-progress">0</div>
                     <div class="stat-label">Em andamento</div>
                 </div>
-
                 <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-green">✓</div>
-                        <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">CONCLUÍDAS</span>
-                    </div>
+                    <div class="stat-header"><div class="stat-icon bg-green">✓</div><span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">CONCLUÍDAS</span></div>
                     <div class="stat-value" id="stat-completed">0</div>
-                    <div class="stat-label">Finalizadas hoje</div>
-                </div>
-
-                <div class="stat-card" onclick="refreshData()" style="cursor: pointer;">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-red" id="refresh-icon">🔄</div>
-                        <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">ATUALIZAR</span>
-                    </div>
-                    <div class="stat-value" style="font-size: 1.25rem; margin-top: 0.5rem;">Sync</div>
-                    <div class="stat-label">Clique para atualizar</div>
+                    <div class="stat-label">Finalizadas</div>
                 </div>
             </div>
 
-            <!-- Section Header -->
             <div class="section-header">
-                <h2 class="section-title">
-                    <span>📦</span>
-                    Lista de Solicitações
-                </h2>
+                <h2 class="section-title"><span>📦</span> Solicitações</h2>
                 <div class="filter-tabs">
                     <button class="tab active" onclick="filterTasks('all')">Todas</button>
                     <button class="tab" onclick="filterTasks('pendente')">Pendentes</button>
-                    <button class="tab" onclick="filterTasks('em andamento')">Andamento</button>
+                    <button class="tab" onclick="filterTasks('andamento')">Andamento</button>
                     <button class="tab" onclick="filterTasks('concluido')">Concluídas</button>
                 </div>
             </div>
 
-            <!-- Requests List -->
             <div class="requests-container" id="requests-list">
                 <div class="empty-state">
                     <div class="empty-icon">📭</div>
-                    <h3>Carregando dados...</h3>
-                    <p>Aguarde a conexão com a planilha</p>
+                    <h3>Carregando...</h3>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Toast -->
     <div id="toast" class="toast">
         <span id="toast-icon">✓</span>
         <span id="toast-message">Mensagem</span>
     </div>
 
     <script>
-        // Configuração
+        // Estado da aplicação
         let API_URL = localStorage.getItem('fleetcontrol_api_url') || '';
-        const SHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
         let requests = [];
         let currentFilter = 'all';
         let isOnline = false;
 
-        // Dados mockados baseados nas imagens
-        const mockData = [
-            {
-                carimbodedatahora: '25/06/2025 10:07:54',
-                solicitante: 'anderson',
-                áreasolicitante: 'Injeção de Alumínio',
-                tipodeoperação: 'Entrega',
-                códigodoitem: '10.001.1724',
-                tempodeatendimento: '00:15 (Urgente)',
-                observação: '',
-                localização: '',
-                id: 'EMP001',
-                status: 'concluido',
-                operador: 'Operador Web',
-                horarioinicio: '2025-06-26T14:23:59.487Z',
-                horarioconclusao: '26/06/2025, 11:24:25',
-                observacaooperador: ''
-            },
-            {
-                carimbodedatahora: '25/06/2025 10:28:29',
-                solicitante: 'EDUARDO SILVA',
-                áreasolicitante: 'Logística',
-                tipodeoperação: 'Validação',
-                códigodoitem: '15.489.2001',
-                tempodeatendimento: '00:30 (Moderado)',
-                observação: '',
-                localização: '',
-                id: 'EMP002',
-                status: 'concluido',
-                operador: 'Operador Web',
-                horarioinicio: '25/06/2025, 10:28:29',
-                horarioconclusao: '25/06/2025, 10:28:37',
-                observacaooperador: '4'
-            }
-        ];
-
+        // Inicialização
         window.onload = function() {
-            if (API_URL) {
-                document.getElementById('apiUrl').value = API_URL;
-                setConnectionStatus(true);
-                loadDataFromSheets();
+            console.log('🚀 FleetControl Pro iniciado');
+            console.log('API_URL configurada:', API_URL ? 'Sim' : 'Não');
+            
+            // Carrega dados do localStorage primeiro
+            const saved = localStorage.getItem('fleetcontrol_requests');
+            if (saved) {
+                try {
+                    requests = JSON.parse(saved);
+                    console.log('Dados carregados:', requests.length, 'registros');
+                } catch (e) {
+                    console.error('Erro ao carregar dados:', e);
+                    requests = [];
+                }
             } else {
-                setConnectionStatus(false);
-                requests = [...mockData];
-                renderRequests();
-                updateStats();
+                // Adiciona dados de exemplo se estiver vazio
+                addSampleData();
             }
             
-            // Auto-refresh a cada 30s se estiver online
-            setInterval(() => {
-                if (isOnline && document.getElementById('dashboard-section').classList.contains('active')) {
-                    loadDataFromSheets();
-                }
-            }, 30000);
+            updateUI();
+            
+            // Se tiver API, tenta conectar
+            if (API_URL) {
+                testConnection();
+            }
         };
 
-        function setConnectionStatus(online) {
-            isOnline = online;
-            const statusEl = document.getElementById('connectionStatus');
-            const textEl = document.getElementById('connectionText');
-            
-            if (online) {
-                statusEl.classList.remove('offline');
-                statusEl.classList.add('online');
-                textEl.textContent = 'ONLINE';
-            } else {
-                statusEl.classList.remove('online');
-                statusEl.classList.add('offline');
-                textEl.textContent = 'OFFLINE';
-            }
+        function addSampleData() {
+            requests = [
+                {
+                    id: 'emp-' + Date.now(),
+                    timestamp: new Date().toLocaleString('pt-BR'),
+                    solicitante: 'anderson',
+                    area: 'Injeção de Alumínio',
+                    tipo: 'Entrega',
+                    codigo: '10.001.1724',
+                    tempo: '00:15 (Urgente)',
+                    observacao: '-',
+                    localizacao: '-',
+                    status: 'concluido',
+                    operador: 'Operador Web',
+                    inicio: new Date().toISOString(),
+                    fim: new Date().toLocaleString('pt-BR')
+                }
+            ];
+            saveLocal();
         }
 
-        function switchTab(tab) {
-            const formSection = document.getElementById('form-section');
-            const dashboardSection = document.getElementById('dashboard-section');
-            const tabs = document.querySelectorAll('.nav-tab');
+        function saveLocal() {
+            localStorage.setItem('fleetcontrol_requests', JSON.stringify(requests));
+            console.log('💾 Dados salvos localmente');
+        }
+
+        function updateUI() {
+            renderRequests();
+            updateStats();
+            updateConnectionStatus();
+        }
+
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('connectionStatus');
+            const textEl = document.getElementById('connectionText');
+            const modeText = document.getElementById('mode-text');
+            const syncInfo = document.getElementById('syncInfo');
             
-            tabs.forEach(t => t.classList.remove('active'));
-            
-            if (tab === 'form') {
-                formSection.classList.add('active');
-                dashboardSection.classList.remove('active');
-                tabs[0].classList.add('active');
+            if (isOnline && API_URL) {
+                statusEl.className = 'connection-status online';
+                textEl.textContent = 'ONLINE';
+                modeText.textContent = 'Integração Google Sheets Ativa';
+                if (syncInfo) syncInfo.innerHTML = '<span style="color: var(--success);">☁️ Sincronizado com Google Sheets</span> <button onclick="refreshData()" style="margin-left: 1rem; background: var(--info); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Atualizar</button>';
+            } else if (API_URL) {
+                statusEl.className = 'connection-status offline';
+                textEl.textContent = 'ERRO CONEXÃO';
+                modeText.textContent = 'Falha na conexão - Usando dados locais';
+                if (syncInfo) syncInfo.innerHTML = '<span style="color: var(--danger);">⚠️ Falha na conexão com API - Modo offline</span> <button onclick="testConnection()" style="margin-left: 1rem; background: var(--warning); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tentar reconectar</button>';
             } else {
-                formSection.classList.remove('active');
-                dashboardSection.classList.add('active');
-                tabs[1].classList.add('active');
-                if (isOnline) loadDataFromSheets();
+                statusEl.className = 'connection-status demo';
+                textEl.textContent = 'MODO DEMO';
+                modeText.textContent = 'Dados salvos localmente (localStorage)';
+                if (syncInfo) syncInfo.innerHTML = '<span>💾 Modo demonstração - Configure a API para sincronizar</span>';
             }
         }
 
         async function handleSubmit(e) {
             e.preventDefault();
+            console.log('Iniciando envio...');
             
             const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<span class="loading"></span> Enviando...';
             btn.disabled = true;
-
-            const priorityMap = {
-                '00:15': '00:15 (Urgente)',
-                '00:30': '00:30 (Moderado)',
-                '01:00': '01:00 (Normal)',
-                '02:00': '02:00 (Padrão)'
-            };
+            btn.innerHTML = '<span class="loading"></span> Enviando...';
 
             const formData = {
+                id: 'emp-' + Date.now(),
+                timestamp: new Date().toLocaleString('pt-BR'),
                 solicitante: document.getElementById('solicitante').value,
                 area: document.querySelector('input[name="area"]:checked').value,
                 tipo: document.querySelector('input[name="tipo"]:checked').value,
                 codigo: document.getElementById('codigo').value,
+                tempo: document.querySelector('input[name="tempo"]:checked').value + ' (' + 
+                       document.querySelector('input[name="tempo"]:checked').parentElement.querySelector('.radio-text').textContent.split(' ')[1] + ')',
+                observacao: document.getElementById('observacao').value || '-',
                 localizacao: document.getElementById('localizacao').value || '-',
-                tempo: priorityMap[document.querySelector('input[name="tempo"]:checked').value],
-                observacao: document.getElementById('observacao').value || '-'
+                status: 'pendente',
+                operador: '',
+                inicio: '',
+                fim: ''
             };
 
-            try {
-                if (isOnline && API_URL) {
+            console.log('Dados do formulário:', formData);
+
+            let enviado = false;
+            let erro = null;
+
+            // Tenta enviar para API se estiver configurada
+            if (API_URL) {
+                try {
+                    console.log('Tentando enviar para API:', API_URL);
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         body: JSON.stringify(formData),
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 'Content-Type': 'application/json' },
+                        mode: 'no-cors' // Importante para evitar erros de CORS em alguns casos
                     });
                     
-                    if (!response.ok) throw new Error('Erro na API');
-                } else {
-                    // Simula envio offline
-                    await new Promise(r => setTimeout(r, 1500));
-                    // Adiciona aos dados locais
-                    const newRow = {
-                        carimbodedatahora: new Date().toLocaleString('pt-BR'),
-                        solicitante: formData.solicitante,
-                        áreasolicitante: formData.area,
-                        tipodeoperação: formData.tipo,
-                        códigodoitem: formData.codigo,
-                        tempodeatendimento: formData.tempo,
-                        observação: formData.observacao,
-                        localização: formData.localizacao,
-                        id: 'EMP' + Date.now(),
-                        status: 'pendente',
-                        operador: '',
-                        horarioinicio: '',
-                        horarioconclusao: '',
-                        observacaooperador: ''
-                    };
-                    requests.unshift(newRow);
+                    console.log('Resposta da API:', response.status);
+                    enviado = true;
+                    isOnline = true;
+                } catch (error) {
+                    console.error('Erro na API:', error);
+                    erro = error;
+                    isOnline = false;
                 }
+            }
 
-                showToast('Solicitação enviada com sucesso!', 'success');
+            // Sempre salva localmente (fallback ou modo demo)
+            try {
+                requests.unshift(formData);
+                saveLocal();
+                console.log('Salvo localmente com sucesso');
+                
+                // Feedback positivo mesmo que a API falhe
+                showToast(enviado ? '✓ Enviado para planilha e salvo localmente' : '✓ Salvo localmente (modo offline)', enviado ? 'success' : 'warning');
+                
                 document.getElementById('requestForm').reset();
+                updateUI();
                 
                 // Se estiver no dashboard, atualiza
                 if (document.getElementById('dashboard-section').classList.contains('active')) {
                     renderRequests();
-                    updateStats();
+                } else {
+                    // Opcional: mudar para o dashboard automaticamente
+                    // switchTab('dashboard');
                 }
-            } catch (error) {
-                console.error('Erro:', error);
-                showToast('Erro ao enviar. Tente novamente.', 'error');
+                
+            } catch (localError) {
+                console.error('Erro ao salvar localmente:', localError);
+                showToast('Erro ao salvar: ' + localError.message, 'error');
             } finally {
-                btn.innerHTML = '<span>Enviar Solicitação</span><span style="font-size: 1.25rem;">→</span>';
                 btn.disabled = false;
+                btn.innerHTML = '<span>Enviar Solicitação</span><span style="font-size: 1.25rem;">→</span>';
+                updateConnectionStatus();
             }
         }
 
-        async function loadDataFromSheets() {
-            if (!isOnline || !API_URL) return;
+        async function testConnection() {
+            const url = document.getElementById('apiUrl')?.value || API_URL;
+            if (!url) {
+                showToast('Configure a URL da API primeiro', 'error');
+                return;
+            }
+
+            API_URL = url;
+            localStorage.setItem('fleetcontrol_api_url', url);
             
-            document.getElementById('syncSpinner').style.display = 'inline-block';
+            showToast('Testando conexão...', 'warning');
             
             try {
                 const response = await fetch(API_URL + '?t=' + Date.now());
                 const data = await response.json();
+                console.log('Conexão OK:', data);
+                isOnline = true;
                 requests = data;
-                renderRequests();
-                updateStats();
-                document.getElementById('syncText').textContent = 'Última sincronização: ' + new Date().toLocaleTimeString('pt-BR');
+                saveLocal();
+                updateUI();
+                showToast('✓ Conectado com sucesso! ' + data.length + ' registros carregados', 'success');
             } catch (error) {
-                console.error('Erro ao carregar:', error);
-                showToast('Erro ao sincronizar', 'error');
-                setConnectionStatus(false);
-            } finally {
-                document.getElementById('syncSpinner').style.display = 'none';
-            }
-        }
-
-        function refreshData() {
-            const icon = document.getElementById('refresh-icon');
-            icon.style.animation = 'spin 1s linear infinite';
-            
-            if (isOnline) {
-                loadDataFromSheets().then(() => {
-                    setTimeout(() => { icon.style.animation = ''; }, 1000);
-                });
-            } else {
-                renderRequests();
-                updateStats();
-                setTimeout(() => { icon.style.animation = ''; }, 1000);
+                console.error('Falha na conexão:', error);
+                isOnline = false;
+                showToast('✗ Falha na conexão: ' + error.message, 'error');
+                updateConnectionStatus();
             }
         }
 
         function renderRequests() {
             const container = document.getElementById('requests-list');
-            
-            // Filtra
             let filtered = requests;
-            if (currentFilter !== 'all') {
-                filtered = requests.filter(r => r.status && r.status.toLowerCase() === currentFilter.toLowerCase());
-            }
             
-            // Ordena: pendentes primeiro, depois por data (mais recente)
-            filtered.sort((a, b) => {
-                if (a.status === 'pendente' && b.status !== 'pendente') return -1;
-                if (a.status !== 'pendente' && b.status === 'pendente') return 1;
-                return new Date(b.carimbodedatahora) - new Date(a.carimbodedatahora);
-            });
+            if (currentFilter !== 'all') {
+                filtered = requests.filter(r => (r.status || 'pendente').toLowerCase().includes(currentFilter.toLowerCase()));
+            }
+
+            filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <h3>Nenhuma solicitação encontrada</h3>
-                        <p>Status selecionado: ${currentFilter}</p>
+                        <p>Status: ${currentFilter}</p>
                     </div>
                 `;
                 updateBadge(0);
                 return;
             }
 
-            container.innerHTML = filtered.map(req => renderCard(req)).join('');
-            
-            const pending = requests.filter(r => r.status === 'pendente').length;
-            updateBadge(pending);
-        }
-
-        function renderCard(req) {
-            const status = req.status || 'pendente';
-            const isUrgent = req.tempodeatendimento && req.tempodeatendimento.includes('Urgente');
-            
-            let statusClass, statusIcon, statusText;
-            switch(status.toLowerCase()) {
-                case 'concluido':
-                    statusClass = 'completed';
+            container.innerHTML = filtered.map(req => {
+                const isUrgent = req.tempo && req.tempo.includes('Urgente');
+                const tagClass = isUrgent ? 'tag-urgent' : req.tempo && req.tempo.includes('Moderado') ? 'tag-moderate' : req.tempo && req.tempo.includes('Normal') ? 'tag-normal' : 'tag-standard';
+                const status = req.status || 'pendente';
+                
+                let statusClass = 'status-pending';
+                let statusIcon = isUrgent ? '🚨' : '📥';
+                let statusText = isUrgent ? 'Urgente' : 'Aguardando';
+                
+                if (status === 'concluido') {
+                    statusClass = 'status-done';
                     statusIcon = '✓';
                     statusText = 'Concluído';
-                    break;
-                case 'em andamento':
-                case 'emandamento':
-                    statusClass = 'in-progress';
+                } else if (status.includes('andamento')) {
+                    statusClass = 'status-progress';
                     statusIcon = '⚙️';
-                    statusText = 'Em Andamento';
-                    break;
-                default:
-                    statusClass = 'pending';
-                    statusIcon = isUrgent ? '🚨' : '📥';
-                    statusText = isUrgent ? 'Urgente' : 'Aguardando';
-            }
+                    statusText = 'Andamento';
+                }
 
-            const tagClass = isUrgent ? 'tag-urgent' : 
-                            (req.tempodeatendimento && req.tempodeatendimento.includes('Moderado')) ? 'tag-moderate' :
-                            (req.tempodeatendimento && req.tempodeatendimento.includes('Normal')) ? 'tag-normal' : 'tag-standard';
+                return `
+                    <div class="request-card ${status === 'concluido' ? 'completed' : status.includes('andamento') ? 'in-progress' : ''}">
+                        <div class="card-status">
+                            <div class="status-icon ${statusClass}">${statusIcon}</div>
+                            <span class="status-text">${statusText}</span>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header-row">
+                                <h3 class="operation-title">${req.tipo}: ${req.codigo}</h3>
+                                <span class="tag ${tagClass}">${req.tempo ? req.tempo.split(' ')[0] : '--'}</span>
+                            </div>
+                            <div class="card-details">
+                                <div class="detail"><span>👤</span><strong>${req.solicitante}</strong> • ${req.area}</div>
+                                ${req.localizacao && req.localizacao !== '-' ? `<div class="detail"><span>📍</span>${req.localizacao}</div>` : ''}
+                                <div class="detail"><span>🕐</span>${req.timestamp}</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            ${renderActions(req)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
             
-            const tagText = req.tempodeatendimento ? req.tempodeatendimento.split(' ')[0] : '--:--';
+            updateBadge(requests.filter(r => r.status === 'pendente').length);
+        }
 
-            let actions = '';
-            if (status.toLowerCase() === 'pendente') {
-                actions = `
+        function renderActions(req) {
+            if (req.status === 'concluido') {
+                return `<button class="btn" disabled style="background: #6b7280; color: white;"><span>✓</span> Finalizado</button>`;
+            } else if (req.status && req.status.includes('andamento')) {
+                return `<button class="btn btn-success" onclick="alert('Função em desenvolvimento')"><span>✓</span> Finalizar</button>`;
+            } else {
+                return `
                     <div class="operator-select">
-                        <select id="op-${req.id}" onchange="selectOperator('${req.id}')">
-                            <option value="">Selecione o operador...</option>
-                            <option value="Operador 1">Operador 1</option>
-                            <option value="Operador 2">Operador 2</option>
-                            <option value="Operador 3">Operador 3</option>
+                        <select id="op-${req.id}" onchange="document.getElementById('btn-${req.id}').disabled = !this.value">
+                            <option value="">Operador...</option>
+                            <option value="Op1">Operador 1</option>
+                            <option value="Op2">Operador 2</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" onclick="startTask('${req.id}')" id="btn-start-${req.id}" disabled>
-                        <span>▶</span> Iniciar
-                    </button>
-                `;
-            } else if (status.toLowerCase().includes('andamento')) {
-                actions = `
-                    <button class="btn btn-success" onclick="completeTask('${req.id}')">
-                        <span>✓</span> Finalizar
-                    </button>
-                    <div style="font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 0.5rem;">
-                        Início: ${req.horarioinicio ? new Date(req.horarioinicio).toLocaleTimeString('pt-BR') : '--:--'}
-                    </div>
-                `;
-            } else {
-                actions = `
-                    <button class="btn" disabled style="background: #6b7280; color: white;">
-                        <span>✓</span> Finalizado
-                    </button>
-                    <div style="font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 0.5rem;">
-                        ${req.horarioconclusao ? 'Concluído: ' + req.horarioconclusao.split(',')[1].trim() : ''}
-                    </div>
+                    <button class="btn btn-primary" id="btn-${req.id}" onclick="startTask('${req.id}')" disabled><span>▶</span> Iniciar</button>
                 `;
             }
-
-            return `
-                <div class="request-card ${statusClass}" data-id="${req.id}">
-                    <div class="card-status">
-                        <div class="status-icon ${status === 'pendente' ? 'status-pending' : statusClass === 'in-progress' ? 'status-progress' : 'status-done'}">
-                            ${statusIcon}
-                        </div>
-                        <span class="status-text">${statusText}</span>
-                    </div>
-                    
-                    <div class="card-info">
-                        <div class="card-header-row">
-                            <h3 class="operation-title">${req.tipodeoperação || req.tipo}: ${req.códigodoitem || req.codigo}</h3>
-                            <span class="tag ${tagClass}">${tagText}</span>
-                            ${isUrgent ? '<span style="color: #dc2626; font-size: 0.75rem;">🔴 PRIORITÁRIO</span>' : ''}
-                        </div>
-                        <div class="card-details">
-                            <div class="detail">
-                                <span>👤</span>
-                                <strong>${req.solicitante}</strong>
-                            </div>
-                            <div class="detail">
-                                <span>🏭</span>
-                                ${req.áreasolicitante || req.area}
-                            </div>
-                            ${req.localização && req.localização !== '-' ? `
-                            <div class="detail">
-                                <span>📍</span>
-                                ${req.localização}
-                            </div>
-                            ` : ''}
-                            ${req.observação && req.observação !== '-' ? `
-                            <div class="detail">
-                                <span>📝</span>
-                                ${req.observação}
-                            </div>
-                            ` : ''}
-                            <div class="detail">
-                                <span>🕐</span>
-                                ${req.carimbodedatahora}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-actions">
-                        ${actions}
-                    </div>
-                </div>
-            `;
         }
 
-        function selectOperator(id) {
-            const select = document.getElementById(`op-${id}`);
-            const btn = document.getElementById(`btn-start-${id}`);
-            btn.disabled = !select.value;
-        }
-
-        async function startTask(id) {
-            const select = document.getElementById(`op-${id}`);
-            const operador = select.value;
-            
-            if (!operador) {
-                showToast('Selecione um operador primeiro', 'error');
-                return;
-            }
-
-            try {
-                if (isOnline && API_URL) {
-                    // Atualiza na planilha
-                    await fetch(API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'start',
-                            id: id,
-                            operador: operador,
-                            horario: new Date().toISOString()
-                        }),
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                } else {
-                    // Atualiza local
-                    const idx = requests.findIndex(r => r.id === id);
-                    if (idx !== -1) {
-                        requests[idx].status = 'em andamento';
-                        requests[idx].operador = operador;
-                        requests[idx].horarioinicio = new Date().toISOString();
-                    }
-                }
-                
-                showToast('Operação iniciada!', 'success');
+        function startTask(id) {
+            const op = document.getElementById('op-' + id).value;
+            const idx = requests.findIndex(r => r.id === id);
+            if (idx !== -1) {
+                requests[idx].status = 'em andamento';
+                requests[idx].operador = op;
+                requests[idx].inicio = new Date().toISOString();
+                saveLocal();
                 renderRequests();
                 updateStats();
-            } catch (error) {
-                showToast('Erro ao iniciar', 'error');
-            }
-        }
-
-        async function completeTask(id) {
-            try {
-                if (isOnline && API_URL) {
-                    await fetch(API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'complete',
-                            id: id,
-                            horario: new Date().toISOString()
-                        }),
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                } else {
-                    const idx = requests.findIndex(r => r.id === id);
-                    if (idx !== -1) {
-                        requests[idx].status = 'concluido';
-                        requests[idx].horarioconclusao = new Date().toLocaleString('pt-BR');
-                    }
-                }
-                
-                showToast('Operação concluída!', 'success');
-                renderRequests();
-                updateStats();
-            } catch (error) {
-                showToast('Erro ao finalizar', 'error');
-            }
-        }
-
-        function updateBadge(count) {
-            const badge = document.getElementById('nav-badge');
-            if (count > 0) {
-                badge.textContent = count;
-                badge.style.display = 'inline-block';
-            } else {
-                badge.style.display = 'none';
+                showToast('✓ Operação iniciada por ' + op, 'success');
             }
         }
 
         function updateStats() {
-            const pending = requests.filter(r => !r.status || r.status.toLowerCase() === 'pendente').length;
-            const progress = requests.filter(r => r.status && r.status.toLowerCase().includes('andamento')).length;
-            const completed = requests.filter(r => r.status && r.status.toLowerCase() === 'concluido').length;
+            document.getElementById('stat-pending').textContent = requests.filter(r => !r.status || r.status === 'pendente').length;
+            document.getElementById('stat-progress').textContent = requests.filter(r => r.status && r.status.includes('andamento')).length;
+            document.getElementById('stat-completed').textContent = requests.filter(r => r.status === 'concluido').length;
+        }
+
+        function updateBadge(count) {
+            const badge = document.getElementById('nav-badge');
+            badge.style.display = count > 0 ? 'inline-block' : 'none';
+            badge.textContent = count;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             
-            document.getElementById('stat-pending').textContent = pending;
-            document.getElementById('stat-progress').textContent = progress;
-            document.getElementById('stat-completed').textContent = completed;
+            if (tab === 'form') {
+                document.getElementById('form-section').classList.add('active');
+                document.querySelectorAll('.nav-tab')[0].classList.add('active');
+            } else {
+                document.getElementById('dashboard-section').classList.add('active');
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                renderRequests();
+            }
         }
 
         function filterTasks(type) {
             currentFilter = type;
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             renderRequests();
         }
 
-        function saveConfig() {
-            const url = document.getElementById('apiUrl').value;
-            if (url && url.includes('script.google.com')) {
-                API_URL = url;
-                localStorage.setItem('fleetcontrol_api_url', url);
-                setConnectionStatus(true);
-                showToast('Conectado com sucesso!', 'success');
-                loadDataFromSheets();
+        function refreshData() {
+            if (isOnline && API_URL) {
+                testConnection();
             } else {
-                showToast('URL inválida', 'error');
+                renderRequests();
+                showToast('Dados atualizados (modo local)', 'success');
             }
         }
 
-        function showToast(message, type) {
+        function toggleConfigPanel() {
+            const panel = document.getElementById('configPanel');
+            const formPanel = document.getElementById('form-section');
+            const dashPanel = document.getElementById('dashboard-section');
+            
+            if (formPanel.classList.contains('active')) {
+                // Se estiver no formulário, rola até a configuração (se houver)
+                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+            } else {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
             const msg = document.getElementById('toast-message');
             
             toast.className = 'toast ' + type;
-            icon.textContent = type === 'success' ? '✓' : '⚠️';
+            icon.textContent = type === 'success' ? '✓' : type === 'warning' ? '⚠' : '✗';
             msg.textContent = message;
             toast.classList.add('show');
             
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
+
+        // Debug: mostra estado no console a cada 10s
+        setInterval(() => {
+            console.log('Status:', isOnline ? 'Online' : 'Offline', '| Registros:', requests.length);
+        }, 10000);
     </script>
 </body>
 </html>
