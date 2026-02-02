@@ -3,610 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FleetControl Pro | Online</title>
+    <title>FleetControl Pro | Sistema Online</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         :root {
-            --primary: #0f172a;
-            --secondary: #1e293b;
-            --accent: #f59e0b;
-            --accent-hover: #d97706;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #334155;
-            --text-light: #94a3b8;
-            --border: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --primary: #0f172a; --secondary: #1e293b; --accent: #f59e0b;
+            --accent-hover: #d97706; --success: #10b981; --danger: #ef4444;
+            --info: #3b82f6; --bg: #f8fafc; --surface: #ffffff;
+            --text: #334155; --text-light: #94a3b8; --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        header {
-            background: white;
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        .brand-text h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .brand-text p {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid;
-        }
-
-        .connection-status.online {
-            background: #d1fae5;
-            color: #047857;
-            border-color: #6ee7b7;
-        }
-
-        .connection-status.offline {
-            background: #fee2e2;
-            color: #991b1b;
-            border-color: #fca5a5;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            background: var(--bg);
-            padding: 0.25rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .nav-tab {
-            padding: 0.5rem 1rem;
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-tab.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .badge {
-            background: var(--danger);
-            color: white;
-            font-size: 0.625rem;
-            padding: 0.125rem 0.375rem;
-            border-radius: 10px;
-            margin-left: 0.25rem;
-        }
-
-        .section {
-            display: none;
-            padding: 2rem 0;
-            animation: fadeIn 0.3s;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Formulário */
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .form-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .form-header h2 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-header p {
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .required::after {
-            content: ' *';
-            color: var(--danger);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        .radio-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 0.75rem;
-        }
-
-        .radio-card {
-            position: relative;
-        }
-
-        .radio-card input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .radio-content {
-            padding: 0.875rem;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .radio-card:hover .radio-content {
-            border-color: #cbd5e1;
-        }
-
-        .radio-card input:checked + .radio-content {
-            border-color: var(--accent);
-            background: #fffbeb;
-        }
-
-        .radio-icon {
-            font-size: 1.25rem;
-        }
-
-        .priority-urgent .radio-content { border-left: 4px solid #dc2626; }
-        .priority-moderate .radio-content { border-left: 4px solid #f59e0b; }
-        .priority-normal .radio-content { border-left: 4px solid #10b981; }
-        .priority-standard .radio-content { border-left: 4px solid #3b82f6; }
-
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Dashboard */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .stat-card.red { border-top: 4px solid #ef4444; }
-        .stat-card.blue { border-top: 4px solid #3b82f6; }
-        .stat-card.yellow { border-top: 4px solid #f59e0b; }
-        .stat-card.green { border-top: 4px solid #10b981; }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-top: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 0.5rem;
-            background: white;
-            padding: 0.25rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .tab-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            font-weight: 500;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .refresh-btn {
-            padding: 0.5rem 1rem;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .refresh-btn:hover {
-            background: var(--bg);
-        }
-
-        /* Cards de Solicitações */
-        .requests-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .request-card {
-            background: white;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .request-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-        }
-
-        .request-card.urgente::before { background: #dc2626; }
-        .request-card.normal::before { background: #3b82f6; }
-        .request-card.andamento::before { background: #f59e0b; }
-        .request-card.concluido::before { background: #10b981; }
-
-        .request-card:hover {
-            box-shadow: var(--shadow);
-            transform: translateX(4px);
-        }
-
-        .card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .card-icon.urgente { background: #fee2e2; color: #dc2626; animation: pulse 2s infinite; }
-        .card-icon.normal { background: #dbeafe; color: #2563eb; }
-        .card-icon.andamento { background: #fef3c7; color: #b45309; }
-        .card-icon.concluido { background: #d1fae5; color: #059669; }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        .card-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.375rem;
-            flex-wrap: wrap;
-        }
-
-        .card-title {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 1rem;
-        }
-
-        .tag {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .tag-urgent { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .tag-moderate { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .tag-normal { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-
-        .card-meta {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.8125rem;
-            color: var(--text-light);
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .urgente-badge {
-            color: #dc2626;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-action {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8125rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 1rem; }
+        .logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .connection-status { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid; }
+        .connection-status.online { background: #d1fae5; color: #047857; border-color: #6ee7b7; }
+        .connection-status.offline { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+        .nav-tabs { display: flex; gap: 0.5rem; background: var(--bg); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border); }
+        .nav-tab { padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text-light); font-weight: 600; font-size: 0.875rem; border-radius: 6px; cursor: pointer; }
+        .nav-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .section { display: none; padding: 2rem 0; }
+        .section.active { display: block; }
+        .form-container { max-width: 700px; margin: 0 auto; background: white; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .form-control { width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 8px; }
+        .radio-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+        .radio-card input { position: absolute; opacity: 0; }
+        .radio-content { padding: 0.875rem; border: 1.5px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; background: white; }
+        .radio-card input:checked + .radio-content { border-color: var(--accent); background: #fffbeb; }
+        .btn-submit { width: 100%; padding: 1rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); border-top: 4px solid var(--border); }
+        .stat-card.red { border-top-color: var(--danger); }
+        .stat-card.blue { border-top-color: var(--info); }
+        .stat-card.yellow { border-top-color: var(--warning); }
+        .stat-card.green { border-top-color: var(--success); }
+        .requests-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .request-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1rem; display: flex; align-items: center; gap: 1rem; border-left: 5px solid #ccc; }
+        .request-card.urgente { border-left-color: var(--danger); }
+        .request-card.andamento { border-left-color: var(--warning); }
+        .request-card.concluido { border-left-color: var(--success); }
+        .btn-action { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
         .btn-start { background: var(--primary); color: white; }
-        .btn-start:hover { background: #1e293b; }
         .btn-finish { background: var(--success); color: white; }
-        .btn-finish:hover { background: #059669; }
-
-        .btn-disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background: #9ca3af;
-            color: white;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--primary);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: var(--shadow-lg);
-            font-weight: 500;
-            z-index: 1000;
-            transform: translateX(150%);
-            transition: transform 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .toast.show { transform: translateX(0); }
-        .toast.success { background: var(--success); }
-        .toast.error { background: var(--danger); }
-
-        .config-banner {
-            background: #fef3c7;
-            border: 1px solid #fcd34d;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .config-input-group {
-            display: flex;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .config-input {
-            flex: 1;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #fcd34d;
-            border-radius: 6px;
-            font-size: 0.875rem;
-        }
-
-        .btn-config {
-            padding: 0.5rem 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem; border-radius: 8px; color: white; display: none; z-index: 1000; }
         .hidden { display: none !important; }
-        .empty-state { text-align: center; padding: 4rem; color: var(--text-light); }
-
-        @media (max-width: 768px) {
-            .request-card { flex-direction: column; align-items: flex-start; }
-            .card-actions { width: 100%; justify-content: flex-end; }
-            .header-content { flex-direction: column; gap: 1rem; }
-        }
     </style>
 </head>
 <body>
@@ -614,21 +60,12 @@
 <header>
     <div class="container">
         <div class="header-content">
-            <div class="brand">
-                <div class="logo">⚡</div>
-                <div class="brand-text">
-                    <h1>FleetControl Pro</h1>
-                    <p id="subtitle">Sistema de Gestão de Empilhadeiras</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div id="connStatus" class="connection-status offline">
-                    <span>●</span>
-                    <span>OFFLINE</span>
-                </div>
+            <div class="brand"><div class="logo">⚡</div><h1>FleetControl Pro</h1></div>
+            <div style="display: flex; gap: 1rem;">
+                <div id="connStatus" class="connection-status offline"><span>●</span> OFFLINE</div>
                 <nav class="nav-tabs">
                     <button class="nav-tab active" onclick="showTab('form')">📝 Solicitar</button>
-                    <button class="nav-tab" onclick="showTab('dashboard')">📊 Painel <span id="navBadge" class="badge hidden">0</span></button>
+                    <button class="nav-tab" onclick="showTab('dashboard')">📊 Painel</button>
                 </nav>
             </div>
         </div>
@@ -638,178 +75,29 @@
 <section id="formSection" class="section active">
     <div class="container">
         <div class="form-container">
-            <div class="form-header">
-                <h2>Nova Solicitação</h2>
-                <p>Preencha os dados para solicitar o serviço de empilhadeira</p>
-            </div>
-            
             <form id="requestForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label required">Solicitante</label>
-                    <input type="text" class="form-control" id="solicitante" required placeholder="Nome completo">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label required">Área Solicitante</label>
+                <div class="form-group"><label class="form-label">Solicitante</label><input type="text" class="form-control" id="solicitante" required></div>
+                <div class="form-group"><label class="form-label">Área</label>
                     <div class="radio-group">
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Injeção de Alumínio" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🏭</span>
-                                <span>Injeção de Alumínio</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Injeção PPS" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🧪</span>
-                                <span>Injeção PPS</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Logística" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🚚</span>
-                                <span>Logística</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Montagem Manual" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🔧</span>
-                                <span>Montagem Manual</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Montagem Automatizada" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🤖</span>
-                                <span>Montagem Automatizada</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Manutenção INJ" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🔨</span>
-                                <span>Manutenção INJ</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Torno" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">⚙️</span>
-                                <span>Torno</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Usinagem" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🔩</span>
-                                <span>Usinagem</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="area" value="Qualidade" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">⭐</span>
-                                <span>Qualidade</span>
-                            </div>
-                        </label>
+                        <label class="radio-card"><input type="radio" name="area" value="Injeção Alumínio" required><div class="radio-content">Injeção Alumínio</div></label>
+                        <label class="radio-card"><input type="radio" name="area" value="Logística"><div class="radio-content">Logística</div></label>
+                        <label class="radio-card"><input type="radio" name="area" value="Montagem"><div class="radio-content">Montagem</div></label>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label required">Tipo de Operação</label>
-                    <div class="radio-group" style="grid-template-columns: repeat(3, 1fr);">
-                        <label class="radio-card">
-                            <input type="radio" name="tipo" value="Entrega" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">📦</span>
-                                <span>Entrega</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="tipo" value="Guarda" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🔒</span>
-                                <span>Guarda</span>
-                            </div>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="tipo" value="Validação" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">✔️</span>
-                                <span>Validação</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label required">Código do Item</label>
-                    <input type="text" class="form-control" id="codigo" required placeholder="Ex: 83420-000">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Localização</label>
-                    <input type="text" class="form-control" id="localizacao" placeholder="Ex: Doca 3 → Estoque A/12">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label required">Tempo de Atendimento</label>
+                <div class="form-group"><label class="form-label">Operação</label>
                     <div class="radio-group">
-                        <label class="radio-card priority-urgent">
-                            <input type="radio" name="tempo" value="00:15 (Urgente)" data-priority="urgent" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🚨</span>
-                                <div>
-                                    <div style="font-weight: 600;">00:15 Urgente</div>
-                                    <div style="font-size: 0.75rem; color: #dc2626;">Parada crítica</div>
-                                </div>
-                            </div>
-                        </label>
-                        <label class="radio-card priority-moderate">
-                            <input type="radio" name="tempo" value="00:30 (Moderado)" data-priority="moderate" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">⚠️</span>
-                                <div>
-                                    <div style="font-weight: 600;">00:30 Moderado</div>
-                                    <div style="font-size: 0.75rem; color: #b45309;">Atenção priorizada</div>
-                                </div>
-                            </div>
-                        </label>
-                        <label class="radio-card priority-normal">
-                            <input type="radio" name="tempo" value="01:00 (Normal)" data-priority="normal" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">✅</span>
-                                <div>
-                                    <div style="font-weight: 600;">01:00 Normal</div>
-                                    <div style="font-size: 0.75rem; color: #059669;">Fluxo padrão</div>
-                                </div>
-                            </div>
-                        </label>
-                        <label class="radio-card priority-standard">
-                            <input type="radio" name="tempo" value="02:00 (Padrão)" data-priority="standard" required>
-                            <div class="radio-content">
-                                <span class="radio-icon">🕐</span>
-                                <div>
-                                    <div style="font-weight: 600;">02:00 Padrão</div>
-                                    <div style="font-size: 0.75rem; color: #2563eb;">Sem urgência</div>
-                                </div>
-                            </div>
-                        </label>
+                        <label class="radio-card"><input type="radio" name="tipo" value="Entrega" required><div class="radio-content">Entrega</div></label>
+                        <label class="radio-card"><input type="radio" name="tipo" value="Guarda"><div class="radio-content">Guarda</div></label>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Observação</label>
-                    <textarea class="form-control" id="observacao" rows="3" placeholder="Informações adicionais..."></textarea>
+                <div class="form-group"><label class="form-label">Código do Item</label><input type="text" class="form-control" id="codigo" required></div>
+                <div class="form-group"><label class="form-label">Tempo/Prioridade</label>
+                    <div class="radio-group">
+                        <label class="radio-card"><input type="radio" name="tempo" value="00:15 (Urgente)" required><div class="radio-content">00:15 Urgente</div></label>
+                        <label class="radio-card"><input type="radio" name="tempo" value="01:00 (Normal)"><div class="radio-content">01:00 Normal</div></label>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <span>Enviar Solicitação</span>
-                    <span>→</span>
-                </button>
+                <button type="submit" class="btn-submit" id="submitBtn">Enviar Solicitação</button>
             </form>
         </div>
     </div>
@@ -817,323 +105,121 @@
 
 <section id="dashboardSection" class="section">
     <div class="container">
-        <div id="configBanner" class="config-banner hidden">
-            <div style="color: #92400e; font-size: 0.875rem;">
-                <strong>⚠️ Modo Offline</strong> - Configure a URL do Apps Script para sincronizar
-            </div>
-            <div class="config-input-group">
-                <input type="text" id="apiUrlInput" class="config-input" placeholder="https://script.google.com/macros/s/.../exec">
-                <button onclick="saveApiUrl()" class="btn-config">Conectar</button>
-            </div>
-        </div>
-
         <div class="stats-grid">
-            <div class="stat-card red">
-                <div class="stat-label">Urgentes</div>
-                <div class="stat-value" id="statUrgent">0</div>
-            </div>
-            <div class="stat-card blue">
-                <div class="stat-label">Pendentes</div>
-                <div class="stat-value" id="statPending">0</div>
-            </div>
-            <div class="stat-card yellow">
-                <div class="stat-label">Em Andamento</div>
-                <div class="stat-value" id="statProgress">0</div>
-            </div>
-            <div class="stat-card green">
-                <div class="stat-label">Concluídas</div>
-                <div class="stat-value" id="statDone">0</div>
-            </div>
+            <div class="stat-card red"><div>Urgentes</div><div id="statUrgent" style="font-size:1.5rem; font-weight:bold;">0</div></div>
+            <div class="stat-card blue"><div>Pendentes</div><div id="statPending" style="font-size:1.5rem; font-weight:bold;">0</div></div>
+            <div class="stat-card yellow"><div>Em Andamento</div><div id="statProgress" style="font-size:1.5rem; font-weight:bold;">0</div></div>
+            <div class="stat-card green"><div>Concluídas</div><div id="statDone" style="font-size:1.5rem; font-weight:bold;">0</div></div>
         </div>
-
-        <div class="controls">
-            <div class="filter-tabs">
-                <button class="tab-btn active" onclick="filterStatus('all')">Todas</button>
-                <button class="tab-btn" onclick="filterStatus('pendente')">Pendentes</button>
-                <button class="tab-btn" onclick="filterStatus('andamento')">Andamento</button>
-                <button class="tab-btn" onclick="filterStatus('concluido')">Concluídas</button>
-            </div>
-            <button class="refresh-btn" onclick="loadData()">
-                <span>🔄</span>
-                <span>Atualizar</span>
-            </button>
-        </div>
-
-        <div id="requestsList" class="requests-list">
-            <div class="empty-state">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
-                <p>Carregando solicitações...</p>
-            </div>
-        </div>
+        <div id="requestsList" class="requests-list"></div>
     </div>
 </section>
 
-<div id="toast" class="toast">
-    <span id="toastIcon">✓</span>
-    <span id="toastMsg">Mensagem</span>
-</div>
+<div id="toast" class="toast"></div>
 
 <script>
-    // IMPORTANTE: Substitua pela sua URL final após o deploy como "Qualquer pessoa"
-    const API_URL = 'https://script.google.com/macros/s/AKfycbytzfBK6-rNj1k6ygJrLNxMyjDm68Bmn4TU3gVL9zQUyUhibPpZcpAuSMv39EZagJjp9Q/exec';
-    
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwGYR1zCBGCK4LeXy_F-7zEYNYhGcKgZ4UUtDVAtfgamYySW2-cVBe9afMJyZ5r5cyXEA/exec'; // Substitua pela sua URL final
     let requests = [];
-    let currentFilter = 'all';
-    let isOnline = false;
-
-    window.onload = async function() {
-        if (!API_URL || API_URL.includes('COLE_AQUI')) {
-            showConfig();
-        } else {
-            await loadData();
-            // Auto-refresh a cada 30 segundos se estiver no painel
-            setInterval(() => {
-                if (document.getElementById('dashboardSection').classList.contains('active')) {
-                    loadData();
-                }
-            }, 30000);
-        }
-    };
-
-    function showTab(tab) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        
-        if (tab === 'form') {
-            document.getElementById('formSection').classList.add('active');
-            document.querySelectorAll('.nav-tab')[0].classList.add('active');
-        } else {
-            document.getElementById('dashboardSection').classList.add('active');
-            document.querySelectorAll('.nav-tab')[1].classList.add('active');
-            loadData();
-        }
-    }
-
-    function showConfig() {
-        document.getElementById('configBanner').classList.remove('hidden');
-        updateConnectionStatus(false);
-    }
 
     async function loadData() {
-        if (!API_URL || API_URL.includes('COLE_AQUI')) return;
-        
+        if (!API_URL.startsWith('http')) return;
         try {
-            // Timestamp (?t=) evita que o navegador retorne dados antigos (cache)
-            const response = await fetch(`${API_URL}?t=${new Date().getTime()}`);
-            if (!response.ok) throw new Error('Erro na resposta do servidor');
-            
+            const response = await fetch(`${API_URL}?t=${Date.now()}`);
             const data = await response.json();
-            
             if (Array.isArray(data)) {
                 requests = data;
-                isOnline = true;
                 updateConnectionStatus(true);
                 renderRequests();
                 updateStats();
-                document.getElementById('configBanner').classList.add('hidden');
-            } else {
-                throw new Error('Formato inválido');
             }
-        } catch (error) {
-            console.error('Erro de carregamento:', error);
-            isOnline = false;
+        } catch (e) {
             updateConnectionStatus(false);
-            showConfig();
+            console.error("Erro de conexão:", e);
         }
     }
 
-    function updateConnectionStatus(online) {
-        const status = document.getElementById('connStatus');
-        if (online) {
-            status.className = 'connection-status online';
-            status.innerHTML = '<span>●</span><span>ONLINE</span>';
-            document.getElementById('subtitle').textContent = 'Sincronizado com Google Sheets';
-        } else {
-            status.className = 'connection-status offline';
-            status.innerHTML = '<span>●</span><span>OFFLINE</span>';
-            document.getElementById('subtitle').textContent = 'Modo Offline';
+    function renderRequests() {
+        const container = document.getElementById('requestsList');
+        if (requests.length === 0) {
+            container.innerHTML = "<div style='text-align:center; padding:2rem;'>Nenhuma solicitação encontrada.</div>";
+            return;
         }
+        container.innerHTML = requests.map(req => {
+            const isUrgent = req.tempo && req.tempo.includes('Urgente');
+            const cardClass = isUrgent ? 'urgente' : (req.status || '');
+            return `
+                <div class="request-card ${cardClass}">
+                    <div style="flex:1">
+                        <strong>${req.tipo || 'Op'}: ${req.codigo || 'S/C'}</strong><br>
+                        <small>👤 ${req.solicitante} | 🏭 ${req.area} | 🕐 ${req.datahora || ''}</small>
+                    </div>
+                    <div>
+                        ${req.status === 'pendente' ? `<button onclick="updateStatus('${req.id}', 'andamento')" class="btn-action btn-start">Iniciar</button>` : ''}
+                        ${req.status === 'andamento' ? `<button onclick="updateStatus('${req.id}', 'concluido')" class="btn-action btn-finish">Finalizar</button>` : ''}
+                        ${req.status === 'concluido' ? `<span style="color:green; font-weight:bold;">✓ Concluído</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerHTML = '<span class="loading"></span> Enviando...';
-
         const formData = {
             solicitante: document.getElementById('solicitante').value,
             area: document.querySelector('input[name="area"]:checked').value,
             tipo: document.querySelector('input[name="tipo"]:checked').value,
             codigo: document.getElementById('codigo').value,
             tempo: document.querySelector('input[name="tempo"]:checked').value,
-            observacao: document.getElementById('observacao').value,
-            localizacao: document.getElementById('localizacao').value
+            observacao: '', localizacao: ''
         };
-
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Utilizado para evitar erros de pré-voo em certos ambientes
-                body: JSON.stringify(formData),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            
-            // Com no-cors, não conseguimos ler o JSON de resposta, mas se não der erro, assumimos sucesso
-            showToast('✓ Solicitação enviada!', 'success');
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
+            showToast("Sucesso!", "#10b981");
             document.getElementById('requestForm').reset();
-            setTimeout(() => {
-                showTab('dashboard');
-                loadData();
-            }, 800);
-
-        } catch (error) {
-            console.error('Erro no envio:', error);
-            showToast('✗ Erro ao enviar solicitação', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<span>Enviar Solicitação</span><span>→</span>';
-        }
+            setTimeout(() => { showTab('dashboard'); loadData(); }, 1000);
+        } catch (e) { showToast("Erro ao enviar", "#ef4444"); }
+        finally { btn.disabled = false; }
     }
 
     async function updateStatus(id, status) {
-        const data = { action: 'update', id: id, status: status };
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            
-            showToast(status === 'andamento' ? '✓ Operação iniciada' : '✓ Concluída', 'success');
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'update', id, status }) });
+            showToast("Status atualizado!", "#3b82f6");
             setTimeout(loadData, 1000);
-        } catch (error) {
-            showToast('Erro ao atualizar', 'error');
-        }
-    }
-
-    function renderRequests() {
-        const container = document.getElementById('requestsList');
-        let filtered = requests;
-        if (currentFilter !== 'all') {
-            filtered = requests.filter(r => r.status === currentFilter);
-        }
-
-        if (filtered.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
-                    <p>Nenhuma solicitação encontrada</p>
-                </div>
-            `;
-            updateBadge(0);
-            return;
-        }
-
-        container.innerHTML = filtered.map(req => {
-            const isUrgent = req.tempo && req.tempo.includes('Urgente');
-            const isAndamento = req.status === 'andamento';
-            const isConcluido = req.status === 'concluido';
-            
-            let cardClass = 'normal';
-            let iconClass = 'normal';
-            let icon = '📦';
-            
-            if (isUrgent && !isAndamento && !isConcluido) {
-                cardClass = 'urgente'; iconClass = 'urgente'; icon = '🚨';
-            } else if (isAndamento) {
-                cardClass = 'andamento'; iconClass = 'andamento'; icon = '⚙️';
-            } else if (isConcluido) {
-                cardClass = 'concluido'; iconClass = 'concluido'; icon = '✓';
-            }
-
-            const timeClass = isUrgent ? 'tag-urgent' : 
-                             (req.tempo && req.tempo.includes('Moderado') ? 'tag-moderate' : 'tag-normal');
-
-            let actionBtn = '';
-            if (req.status === 'pendente') {
-                actionBtn = `<button onclick="updateStatus('${req.id}', 'andamento')" class="btn-action btn-start">▶ Iniciar</button>`;
-            } else if (req.status === 'andamento') {
-                actionBtn = `<button onclick="updateStatus('${req.id}', 'concluido')" class="btn-action btn-finish">✓ Finalizar</button>`;
-            } else {
-                actionBtn = `<button class="btn-action btn-disabled" disabled>Concluído</button>`;
-            }
-
-            return `
-                <div class="request-card ${cardClass}">
-                    <div class="card-icon ${iconClass}">${icon}</div>
-                    <div class="card-content">
-                        <div class="card-header">
-                            <span class="card-title">${req.tipo || 'Operação'}: ${req.codigo || 'S/C'}</span>
-                            <span class="tag ${timeClass}">${req.tempo ? req.tempo.split(' ')[0] : '--:--'}</span>
-                        </div>
-                        <div class="card-meta">
-                            ${isUrgent && !isConcluido ? '<span class="urgente-badge">🚨 URGENTE</span>' : ''}
-                            <span class="meta-item">👤 ${req.solicitante || 'Anônimo'}</span>
-                            <span>•</span>
-                            <span class="meta-item">🏭 ${req.area || 'Geral'}</span>
-                            ${req.localizacao ? `<span>•</span><span class="meta-item">📍 ${req.localizacao}</span>` : ''}
-                            <span>•</span>
-                            <span class="meta-item">🕐 ${req.datahora || req.timestamp || '--:--'}</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">${actionBtn}</div>
-                </div>
-            `;
-        }).join('');
-
-        const urgentCount = requests.filter(r => r.status === 'pendente' && r.tempo && r.tempo.includes('Urgente')).length;
-        updateBadge(urgentCount);
+        } catch (e) { showToast("Erro ao atualizar", "#ef4444"); }
     }
 
     function updateStats() {
-        const urgentes = requests.filter(r => r.tempo && r.tempo.includes('Urgente') && r.status !== 'concluido').length;
-        const pendentes = requests.filter(r => r.status === 'pendente').length;
-        const andamento = requests.filter(r => r.status === 'andamento').length;
-        const concluidas = requests.filter(r => r.status === 'concluido').length;
-        
-        document.getElementById('statUrgent').textContent = urgentes;
-        document.getElementById('statPending').textContent = pendentes;
-        document.getElementById('statProgress').textContent = andamento;
-        document.getElementById('statDone').textContent = concluidas;
+        document.getElementById('statUrgent').textContent = requests.filter(r => r.tempo?.includes('Urgente') && r.status !== 'concluido').length;
+        document.getElementById('statPending').textContent = requests.filter(r => r.status === 'pendente').length;
+        document.getElementById('statProgress').textContent = requests.filter(r => r.status === 'andamento').length;
+        document.getElementById('statDone').textContent = requests.filter(r => r.status === 'concluido').length;
     }
 
-    function updateBadge(count) {
-        const badge = document.getElementById('navBadge');
-        if (count > 0) {
-            badge.textContent = count;
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-        }
+    function updateConnectionStatus(online) {
+        const el = document.getElementById('connStatus');
+        el.className = `connection-status ${online ? 'online' : 'offline'}`;
+        el.innerHTML = `<span>●</span> ${online ? 'ONLINE' : 'OFFLINE'}`;
     }
 
-    function filterStatus(status) {
-        currentFilter = status;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-        renderRequests();
+    function showTab(tab) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${tab}Section`).classList.add('active');
+        event.currentTarget?.classList.add('active');
+        if (tab === 'dashboard') loadData();
     }
 
-    function saveApiUrl() {
-        const url = document.getElementById('apiUrlInput').value;
-        if (url && url.includes('script.google.com')) {
-            alert('URL salva! Recarregando aplicação...');
-            location.reload();
-        } else {
-            showToast('URL inválida', 'error');
-        }
+    function showToast(m, c) {
+        const t = document.getElementById('toast');
+        t.textContent = m; t.style.background = c; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
     }
 
-    function showToast(msg, type) {
-        const toast = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        document.getElementById('toastIcon').textContent = type === 'success' ? '✓' : '✗';
-        toast.className = `toast show ${type}`;
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
+    window.onload = loadData;
 </script>
-
 </body>
 </html>
