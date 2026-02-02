@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FleetControl Pro | Gestão de Empilhadeiras</title>
+    <title>FleetControl Pro | Sistema Online</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -107,25 +107,32 @@
             border-radius: 9999px;
             border: 1px solid var(--border);
             font-weight: 600;
-        }
-
-        .connection-status.demo {
-            background: #fef3c7;
-            color: #92400e;
-            border-color: #fcd34d;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         .connection-status.online {
             background: #d1fae5;
             color: #047857;
             border-color: #6ee7b7;
+            animation: pulse 2s infinite;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
+        .connection-status.offline {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        .connection-status.syncing {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .nav-tabs {
@@ -166,6 +173,8 @@
             font-weight: 700;
             padding: 0.125rem 0.375rem;
             border-radius: 9999px;
+            min-width: 18px;
+            text-align: center;
         }
 
         .section {
@@ -182,7 +191,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Form Styles */
         .form-container {
             max-width: 800px;
             margin: 2rem auto;
@@ -361,7 +369,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Dashboard Styles - Novo Layout Visualizador */
         .stats-section {
             margin: 2.5rem 0;
             display: grid;
@@ -400,10 +407,10 @@
             font-size: 1.25rem;
         }
 
+        .bg-red { background: #fee2e2; color: #991b1b; }
         .bg-blue { background: #dbeafe; color: #1d4ed8; }
         .bg-yellow { background: #fef3c7; color: #b45309; }
         .bg-green { background: #d1fae5; color: #047857; }
-        .bg-red { background: #fee2e2; color: #991b1b; }
 
         .stat-value {
             font-size: 2rem;
@@ -417,6 +424,58 @@
             font-size: 0.875rem;
             color: var(--text-light);
             font-weight: 500;
+        }
+
+        .sync-banner {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #93c5fd;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sync-banner.offline {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        .sync-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .sync-banner.offline .sync-info {
+            color: #991b1b;
+        }
+
+        .sync-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.375rem 0.875rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-small:hover {
+            background: var(--bg);
         }
 
         .section-header {
@@ -464,7 +523,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* Novo Layout de Cards - Modelo Visualizador */
         .requests-container {
             display: flex;
             flex-direction: column;
@@ -494,10 +552,8 @@
         .request-card:hover {
             box-shadow: var(--shadow);
             transform: translateX(4px);
-            border-color: #cbd5e1;
         }
 
-        /* Barra lateral colorida por status */
         .request-card::before {
             content: '';
             position: absolute;
@@ -508,19 +564,10 @@
             background: var(--border);
         }
 
-        .request-card.urgente::before {
-            background: #dc2626;
-        }
+        .request-card.urgente::before { background: #dc2626; }
+        .request-card.andamento::before { background: #f59e0b; }
+        .request-card.concluido::before { background: #10b981; }
 
-        .request-card.andamento::before {
-            background: #f59e0b;
-        }
-
-        .request-card.concluido::before {
-            background: #10b981;
-        }
-
-        /* Ícone de status à esquerda */
         .card-icon {
             width: 48px;
             height: 48px;
@@ -560,7 +607,11 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Conteúdo central */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .card-content {
             flex: 1;
             display: flex;
@@ -634,12 +685,11 @@
             letter-spacing: 0.05em;
         }
 
-        /* Ações à direita (simplificadas) */
         .card-actions {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            min-width: 120px;
+            min-width: 100px;
             justify-content: flex-end;
         }
 
@@ -664,7 +714,6 @@
 
         .btn-primary:hover {
             background: #1e293b;
-            transform: translateY(-1px);
         }
 
         .btn-success {
@@ -690,17 +739,6 @@
             letter-spacing: 0.05em;
         }
 
-        .timer-display {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: #b45309;
-            background: #fef3c7;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -726,7 +764,6 @@
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -741,15 +778,53 @@
             opacity: 0.3;
         }
 
-        /* Config Panel */
-        .config-panel {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
+        .setup-panel {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
             margin: 2rem auto;
             max-width: 800px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .setup-header h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .setup-header p {
+            color: var(--text-light);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'Google Apps Script';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255,255,255,0.1);
+            padding: 0.25rem 0.75rem;
+            font-size: 0.7rem;
+            border-radius: 0 12px 0 12px;
+            color: #94a3b8;
         }
 
         .input-group {
@@ -760,8 +835,8 @@
 
         .input-group input {
             flex: 1;
-            padding: 0.625rem 0.875rem;
-            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 0.875rem;
         }
@@ -769,25 +844,53 @@
         .btn-secondary {
             background: var(--secondary);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
-        .config-toggle {
-            text-align: center;
-            margin-top: 2rem;
+        .btn-secondary:hover {
+            background: var(--primary);
         }
 
-        .btn-text {
-            background: none;
-            border: none;
-            color: var(--info);
-            cursor: pointer;
+        .setup-steps {
+            counter-reset: step;
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .setup-steps li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .setup-steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
             font-size: 0.875rem;
-            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         @media (max-width: 768px) {
@@ -796,20 +899,17 @@
                 align-items: flex-start;
                 gap: 1rem;
             }
-
             .card-actions {
                 width: 100%;
                 justify-content: flex-start;
             }
-
             .header-content {
                 flex-direction: column;
                 gap: 1rem;
             }
-
-            .nav-tabs {
-                width: 100%;
-                justify-content: center;
+            .sync-banner {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -824,13 +924,13 @@
                     <div class="logo">⚡</div>
                     <div class="brand-text">
                         <h1>FleetControl Pro</h1>
-                        <p id="mode-text">Modo Demonstração</p>
+                        <p id="mode-text">Sistema de Gestão Online</p>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div class="connection-status demo" id="connectionStatus">
-                        <span class="status-dot"></span>
-                        <span id="connectionText">DADOS LOCAIS</span>
+                    <div class="connection-status offline" id="connectionStatus" onclick="showSetup()">
+                        <span>●</span>
+                        <span id="connectionText">OFFLINE</span>
                     </div>
                     <nav class="nav-tabs">
                         <button class="nav-tab active" onclick="switchTab('form')">📝 Solicitar</button>
@@ -841,259 +941,353 @@
         </div>
     </header>
 
-    <section id="form-section" class="section active">
-        <div class="container">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2>Solicitação de Empilhadeira</h2>
-                    <p>Preencha todos os campos obrigatórios</p>
-                </div>
-                
-                <form class="form-body" id="requestForm" onsubmit="handleSubmit(event)">
-                    <div class="form-group">
-                        <label class="form-label required">Solicitante</label>
-                        <input type="text" class="form-control" id="solicitante" required placeholder="Nome completo">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Área Solicitante</label>
-                        <div class="radio-group">
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Injeção de Alumínio" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🏭</span>
-                                    <span class="radio-text">Injeção de Alumínio</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Injeção PPS" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🧪</span>
-                                    <span class="radio-text">Injeção PPS</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Logística" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🚚</span>
-                                    <span class="radio-text">Logística</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Montagem Manual" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔧</span>
-                                    <span class="radio-text">Montagem Manual</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Montagem Automatizada" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🤖</span>
-                                    <span class="radio-text">Montagem Automatizada</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Manutenção INJ" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔨</span>
-                                    <span class="radio-text">Manutenção INJ</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Torno" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">⚙️</span>
-                                    <span class="radio-text">Torno</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Usinagem" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔩</span>
-                                    <span class="radio-text">Usinagem</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="area" value="Qualidade" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">⭐</span>
-                                    <span class="radio-text">Qualidade</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Tipo de Operação</label>
-                        <div class="radio-group" style="grid-template-columns: repeat(3, 1fr);">
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Entrega" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">📦</span>
-                                    <span class="radio-text">Entrega</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Guarda" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">🔒</span>
-                                    <span class="radio-text">Guarda</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tipo" value="Validação" required>
-                                <div class="radio-content">
-                                    <span class="radio-icon">✔️</span>
-                                    <span class="radio-text">Validação</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Código do Item</label>
-                        <input type="text" class="form-control" id="codigo" required placeholder="Ex: 83420-000">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Localização</label>
-                        <input type="text" class="form-control" id="localizacao" placeholder="Ex: Doca 3 → Estoque A/12">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Tempo de Atendimento</label>
-                        <div class="radio-group">
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="00:15" data-priority="urgent" required>
-                                <div class="radio-content priority-urgent">
-                                    <span class="radio-icon">🚨</span>
-                                    <div>
-                                        <span class="radio-text">00:15 Urgente</span>
-                                        <span class="priority-desc">Parada crítica</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="00:30" data-priority="moderate" required>
-                                <div class="radio-content priority-moderate">
-                                    <span class="radio-icon">⚠️</span>
-                                    <div>
-                                        <span class="radio-text">00:30 Moderado</span>
-                                        <span class="priority-desc">Atenção priorizada</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="01:00" data-priority="normal" required>
-                                <div class="radio-content priority-normal">
-                                    <span class="radio-icon">✅</span>
-                                    <div>
-                                        <span class="radio-text">01:00 Normal</span>
-                                        <span class="priority-desc">Fluxo padrão</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="tempo" value="02:00" data-priority="standard" required>
-                                <div class="radio-content priority-standard">
-                                    <span class="radio-icon">🕐</span>
-                                    <div>
-                                        <span class="radio-text">02:00 Padrão</span>
-                                        <span class="priority-desc">Sem urgência</span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Observação</label>
-                        <textarea class="form-control" id="observacao" rows="3" placeholder="Informações adicionais..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        <span>Enviar Solicitação</span>
-                        <span>→</span>
-                    </button>
-                </form>
+    <!-- Tela de Configuração (mostrada quando não conectado) -->
+    <div id="setupScreen" class="container hidden" style="padding-top: 2rem;">
+        <div class="setup-panel">
+            <div class="setup-header">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔌</div>
+                <h2>Configurar Conexão Online</h2>
+                <p>Conecte o sistema à sua planilha Google Sheets para sincronização em tempo real</p>
             </div>
 
-            <div class="config-toggle">
-                <button class="btn-text" onclick="toggleConfig()">⚙️ Configurar integração com Google Sheets</button>
-            </div>
+            <ol class="setup-steps">
+                <li>
+                    <strong>Abra sua planilha</strong> do Google Sheets (a mesma usada no Google Forms)<br>
+                    <span style="color: var(--text-light); font-size: 0.875rem;">ID: 1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE</span>
+                </li>
+                <li>
+                    <strong>Clique em Extensões → Apps Script</strong> no menu do Google Sheets
+                </li>
+                <li>
+                    <strong>Delete o código padrão</strong> e cole o código abaixo:
+                    <div class="code-block" id="codeBlock">const SHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
+const SHEET_NAME = 'Form Responses 1';
 
-            <div id="configPanel" class="config-panel" style="display: none;">
-                <h3 style="margin-bottom: 1rem; color: var(--primary);">Configuração da API</h3>
-                <p style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 1rem;">
-                    Insira a URL do Google Apps Script Web App
-                </p>
-                <div class="input-group">
-                    <input type="url" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-family: monospace;">
-                    <button class="btn-secondary" onclick="saveConfig()">Salvar</button>
-                </div>
-                <div id="configStatus" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
-            </div>
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    
+    sheet.appendRow([
+      new Date(),                    // A: Timestamp
+      data.solicitante,              // B: Solicitante
+      data.area,                     // C: Área
+      data.tipo,                     // D: Tipo
+      data.codigo,                   // E: Código
+      data.tempo,                    // F: Tempo
+      data.observacao || '-',        // G: Observação
+      data.localizacao || '-',       // H: Localização
+      data.id,                       // I: ID
+      data.status,                   // J: Status
+      '',                            // K: Operador (não usado)
+      '',                            // L: Início
+      ''                             // M: Fim
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({success: true, id: data.id}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    const data = sheet.getDataRange().getDisplayValues();
+    const headers = ['timestamp','solicitante','area','tipo','codigo','tempo','observacao','localizacao','id','status','operador','inicio','fim'];
+    const rows = [];
+    
+    for(let i = 1; i < data.length; i++) {
+      const row = {};
+      headers.forEach((h, j) => row[h] = data[i][j] || '');
+      rows.push(row);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify(rows))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</div>
+                    <button onclick="copyCode()" class="btn-small" style="margin-top: 0.5rem;">📋 Copiar Código</button>
+                </li>
+                <li>
+                    <strong>Salve o projeto</strong> (Ctrl+S) e clique em <strong>Implantar → Novo implantação</strong>
+                </li>
+                <li>
+                    Tipo: <strong>Aplicativo da Web</strong><br>
+                    Execute como: <strong>Eu</strong><br>
+                    Acesso: <strong>Qualquer pessoa</strong><br>
+                    Clique em <strong>Implantar</strong> e autorize as permissões
+                </li>
+                <li>
+                    <strong>Cole a URL gerada</strong> aqui:
+                    <div class="input-group" style="margin-top: 0.5rem;">
+                        <input type="url" id="setupApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                        <button class="btn-secondary" onclick="connectAPI()">Conectar</button>
+                    </div>
+                </li>
+            </ol>
         </div>
-    </section>
+    </div>
 
-    <section id="dashboard-section" class="section">
-        <div class="container">
-            <div class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-red">🚨</div>
+    <!-- Conteúdo Principal -->
+    <div id="mainContent">
+        <section id="form-section" class="section active">
+            <div class="container">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Solicitação de Empilhadeira</h2>
+                        <p id="formSubtitle">Modo Offline - Dados salvos localmente</p>
                     </div>
-                    <div class="stat-value" id="stat-urgent">0</div>
-                    <div class="stat-label">Urgentes</div>
-                </div>
+                    
+                    <form class="form-body" id="requestForm" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label required">Solicitante</label>
+                            <input type="text" class="form-control" id="solicitante" required placeholder="Nome completo">
+                        </div>
 
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-blue">📋</div>
-                    </div>
-                    <div class="stat-value" id="stat-pending">0</div>
-                    <div class="stat-label">Pendentes</div>
-                </div>
+                        <div class="form-group">
+                            <label class="form-label required">Área Solicitante</label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Injeção de Alumínio" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🏭</span>
+                                        <span class="radio-text">Injeção de Alumínio</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Injeção PPS" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🧪</span>
+                                        <span class="radio-text">Injeção PPS</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Logística" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🚚</span>
+                                        <span class="radio-text">Logística</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Montagem Manual" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🔧</span>
+                                        <span class="radio-text">Montagem Manual</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Montagem Automatizada" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🤖</span>
+                                        <span class="radio-text">Montagem Automatizada</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Manutenção INJ" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🔨</span>
+                                        <span class="radio-text">Manutenção INJ</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Torno" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">⚙️</span>
+                                        <span class="radio-text">Torno</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Usinagem" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🔩</span>
+                                        <span class="radio-text">Usinagem</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="area" value="Qualidade" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">⭐</span>
+                                        <span class="radio-text">Qualidade</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-yellow">⏱️</div>
-                    </div>
-                    <div class="stat-value" id="stat-progress">0</div>
-                    <div class="stat-label">Em Andamento</div>
-                </div>
+                        <div class="form-group">
+                            <label class="form-label required">Tipo de Operação</label>
+                            <div class="radio-group" style="grid-template-columns: repeat(3, 1fr);">
+                                <label class="radio-card">
+                                    <input type="radio" name="tipo" value="Entrega" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">📦</span>
+                                        <span class="radio-text">Entrega</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="tipo" value="Guarda" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🔒</span>
+                                        <span class="radio-text">Guarda</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="tipo" value="Validação" required>
+                                    <div class="radio-content">
+                                        <span class="radio-icon">✔️</span>
+                                        <span class="radio-text">Validação</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon bg-green">✓</div>
-                    </div>
-                    <div class="stat-value" id="stat-completed">0</div>
-                    <div class="stat-label">Concluídas Hoje</div>
+                        <div class="form-group">
+                            <label class="form-label required">Código do Item</label>
+                            <input type="text" class="form-control" id="codigo" required placeholder="Ex: 83420-000">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Localização</label>
+                            <input type="text" class="form-control" id="localizacao" placeholder="Ex: Doca 3 → Estoque A/12">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Tempo de Atendimento</label>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="tempo" value="00:15" data-priority="urgent" required>
+                                    <div class="radio-content priority-urgent">
+                                        <span class="radio-icon">🚨</span>
+                                        <div>
+                                            <span class="radio-text">00:15 Urgente</span>
+                                            <span class="priority-desc">Parada crítica</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="tempo" value="00:30" data-priority="moderate" required>
+                                    <div class="radio-content priority-moderate">
+                                        <span class="radio-icon">⚠️</span>
+                                        <div>
+                                            <span class="radio-text">00:30 Moderado</span>
+                                            <span class="priority-desc">Atenção priorizada</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="tempo" value="01:00" data-priority="normal" required>
+                                    <div class="radio-content priority-normal">
+                                        <span class="radio-icon">✅</span>
+                                        <div>
+                                            <span class="radio-text">01:00 Normal</span>
+                                            <span class="priority-desc">Fluxo padrão</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="tempo" value="02:00" data-priority="standard" required>
+                                    <div class="radio-content priority-standard">
+                                        <span class="radio-icon">🕐</span>
+                                        <div>
+                                            <span class="radio-text">02:00 Padrão</span>
+                                            <span class="priority-desc">Sem urgência</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Observação</label>
+                            <textarea class="form-control" id="observacao" rows="3" placeholder="Informações adicionais..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <span>Enviar Solicitação</span>
+                            <span>→</span>
+                        </button>
+                    </form>
                 </div>
             </div>
+        </section>
 
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span>📦</span>
-                    Solicitações
-                </h2>
-                <div class="filter-tabs">
-                    <button class="tab active" onclick="filterTasks('all')">Todas</button>
-                    <button class="tab" onclick="filterTasks('pendente')">Pendentes</button>
-                    <button class="tab" onclick="filterTasks('andamento')">Andamento</button>
-                    <button class="tab" onclick="filterTasks('concluido')">Concluídas</button>
+        <section id="dashboard-section" class="section">
+            <div class="container">
+                <div id="syncBanner" class="sync-banner offline">
+                    <div class="sync-info">
+                        <span style="font-size: 1.25rem;">⚠️</span>
+                        <div>
+                            <div style="font-weight: 600;">Modo Offline Ativo</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Configure a integração para sincronizar com a planilha</div>
+                        </div>
+                    </div>
+                    <div class="sync-actions">
+                        <button class="btn-small" onclick="showSetup()">⚙️ Configurar</button>
+                        <button class="btn-small" onclick="syncData()">🔄 Tentar Sincronizar</button>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon bg-red">🚨</div>
+                        </div>
+                        <div class="stat-value" id="stat-urgent">0</div>
+                        <div class="stat-label">Urgentes</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon bg-blue">📋</div>
+                        </div>
+                        <div class="stat-value" id="stat-pending">0</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon bg-yellow">⏱️</div>
+                        </div>
+                        <div class="stat-value" id="stat-progress">0</div>
+                        <div class="stat-label">Em Andamento</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon bg-green">✓</div>
+                        </div>
+                        <div class="stat-value" id="stat-completed">0</div>
+                        <div class="stat-label">Concluídas Hoje</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>📦</span>
+                        Solicitações
+                    </h2>
+                    <div class="filter-tabs">
+                        <button class="tab active" onclick="filterTasks('all')">Todas</button>
+                        <button class="tab" onclick="filterTasks('pendente')">Pendentes</button>
+                        <button class="tab" onclick="filterTasks('andamento')">Andamento</button>
+                        <button class="tab" onclick="filterTasks('concluido')">Concluídas</button>
+                    </div>
+                </div>
+
+                <div class="requests-container" id="requests-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3>Carregando...</h3>
+                    </div>
                 </div>
             </div>
-
-            <div class="requests-container" id="requests-list">
-                <div class="empty-state">
-                    <div class="empty-icon">📭</div>
-                    <h3>Nenhuma solicitação encontrada</h3>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <div id="toast" class="toast">
         <span id="toast-icon">✓</span>
@@ -1101,71 +1295,92 @@
     </div>
 
     <script>
+        const SHEET_ID = '1vmuL-OXeanaYhVFD4sKJpHWfITxSyXFixyOleMBk4RE';
         let API_URL = localStorage.getItem('fleetcontrol_api_url') || '';
         let requests = [];
+        let isOnline = false;
         let currentFilter = 'all';
+        let syncInterval = null;
 
-        // Dados de exemplo baseados na imagem
-        const mockData = [
-            {
-                id: '1',
-                timestamp: new Date().toLocaleString('pt-BR'),
-                solicitante: 'Matheus',
-                area: 'Injeção de Alumínio',
-                tipo: 'Entrega',
-                codigo: '83420-000',
-                tempo: '00:15',
-                prioridade: 'urgent',
-                observacao: '',
-                localizacao: '',
-                status: 'pendente'
-            },
-            {
-                id: '2',
-                timestamp: new Date(Date.now() - 3600000).toLocaleString('pt-BR'),
-                solicitante: 'Ana Paula',
-                area: 'Logística',
-                tipo: 'Guarda',
-                codigo: '10.001.1724',
-                tempo: '01:00',
-                prioridade: 'normal',
-                observacao: '',
-                localizacao: 'Doca 3 → Estoque A',
-                status: 'andamento'
-            }
-        ];
-
-        window.onload = function() {
+        window.onload = async function() {
+            // Carrega dados locais primeiro
             const saved = localStorage.getItem('fleetcontrol_requests');
             if (saved) {
                 requests = JSON.parse(saved);
-            } else {
-                requests = [...mockData];
-                saveLocal();
             }
+            
             updateUI();
+            
+            // Se tiver API configurada, tenta conectar automaticamente
+            if (API_URL) {
+                await testConnection();
+                if (isOnline) {
+                    startAutoSync();
+                }
+            } else {
+                showSetup();
+            }
         };
 
-        function saveLocal() {
-            localStorage.setItem('fleetcontrol_requests', JSON.stringify(requests));
+        function startAutoSync() {
+            // Sincroniza a cada 30 segundos se estiver online
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                if (isOnline && document.getElementById('dashboard-section').classList.contains('active')) {
+                    await loadFromSheet();
+                }
+            }, 30000);
         }
 
-        function updateUI() {
-            renderRequests();
-            updateStats();
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        async function testConnection() {
+            updateConnectionStatus('syncing', 'CONECTANDO...');
             
-            if (tab === 'form') {
-                document.getElementById('form-section').classList.add('active');
-                document.querySelectorAll('.nav-tab')[0].classList.add('active');
-            } else {
-                document.getElementById('dashboard-section').classList.add('active');
-                document.querySelectorAll('.nav-tab')[1].classList.add('active');
-                renderRequests();
+            try {
+                const response = await fetch(API_URL + '?t=' + Date.now());
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    isOnline = true;
+                    requests = data;
+                    saveLocal();
+                    updateConnectionStatus('online', 'ONLINE');
+                    updateUI();
+                    showToast('✓ Conectado à planilha Google Sheets!', 'success');
+                    document.getElementById('setupScreen').classList.add('hidden');
+                    document.getElementById('mainContent').classList.remove('hidden');
+                    document.getElementById('formSubtitle').textContent = 'Sincronizado com Google Sheets';
+                    updateSyncBanner(true);
+                    return true;
+                } else {
+                    throw new Error('Resposta inválida da API');
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                isOnline = false;
+                updateConnectionStatus('offline', 'OFFLINE');
+                updateSyncBanner(false);
+                return false;
+            }
+        }
+
+        async function loadFromSheet() {
+            if (!isOnline || !API_URL) return;
+            
+            try {
+                const response = await fetch(API_URL + '?t=' + Date.now());
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    requests = data;
+                    saveLocal();
+                    renderRequests();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar:', error);
+                isOnline = false;
+                updateConnectionStatus('offline', 'OFFLINE');
+                updateSyncBanner(false);
             }
         }
 
@@ -1184,7 +1399,7 @@
             };
 
             const formData = {
-                id: Date.now().toString(),
+                id: 'EMP-' + Date.now(),
                 timestamp: new Date().toLocaleString('pt-BR'),
                 solicitante: document.getElementById('solicitante').value,
                 area: document.querySelector('input[name="area"]:checked').value,
@@ -1192,24 +1407,156 @@
                 codigo: document.getElementById('codigo').value,
                 tempo: document.querySelector('input[name="tempo"]:checked').value,
                 prioridade: priorityMap[document.querySelector('input[name="tempo"]:checked').value],
-                observacao: document.getElementById('observacao').value || '',
-                localizacao: document.getElementById('localizacao').value || '',
+                observacao: document.getElementById('observacao').value || '-',
+                localizacao: document.getElementById('localizacao').value || '-',
                 status: 'pendente'
             };
 
-            try {
-                requests.unshift(formData);
-                saveLocal();
-                
-                showToast('Solicitação enviada com sucesso!', 'success');
-                document.getElementById('requestForm').reset();
-                
+            // Se estiver online, envia para a planilha
+            if (isOnline && API_URL) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(formData),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showToast('✓ Enviado para a planilha!', 'success');
+                    } else {
+                        throw new Error(result.error || 'Erro ao salvar');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar:', error);
+                    showToast('⚠️ Erro na API. Salvando localmente...', 'error');
+                    isOnline = false;
+                    updateConnectionStatus('offline', 'OFFLINE');
+                    updateSyncBanner(false);
+                }
+            } else {
+                showToast('💾 Modo offline - Dados salvos localmente', 'success');
+            }
+
+            // Sempre salva local também (backup)
+            requests.unshift(formData);
+            saveLocal();
+            
+            document.getElementById('requestForm').reset();
+            btn.disabled = false;
+            btn.innerHTML = '<span>Enviar Solicitação</span><span>→</span>';
+            
+            // Atualiza o dashboard se estiver visível
+            if (document.getElementById('dashboard-section').classList.contains('active')) {
+                renderRequests();
+                updateStats();
+            } else {
+                // Muda para o dashboard após envio
                 setTimeout(() => switchTab('dashboard'), 500);
-            } catch (error) {
-                showToast('Erro ao salvar', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>Enviar Solicitação</span><span>→</span>';
+            }
+        }
+
+        function saveLocal() {
+            localStorage.setItem('fleetcontrol_requests', JSON.stringify(requests));
+        }
+
+        function updateConnectionStatus(status, text) {
+            const el = document.getElementById('connectionStatus');
+            const txt = document.getElementById('connectionText');
+            
+            el.className = 'connection-status ' + status;
+            txt.textContent = text;
+        }
+
+        function updateSyncBanner(online) {
+            const banner = document.getElementById('syncBanner');
+            if (!banner) return;
+            
+            if (online) {
+                banner.className = 'sync-banner';
+                banner.innerHTML = `
+                    <div class="sync-info">
+                        <span style="font-size: 1.25rem;">☁️</span>
+                        <div>
+                            <div style="font-weight: 600;">Sincronizado</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Dados atualizados em tempo real</div>
+                        </div>
+                    </div>
+                    <div class="sync-actions">
+                        <button class="btn-small" onclick="syncData()">🔄 Atualizar Agora</button>
+                    </div>
+                `;
+            } else {
+                banner.className = 'sync-banner offline';
+                banner.innerHTML = `
+                    <div class="sync-info">
+                        <span style="font-size: 1.25rem;">⚠️</span>
+                        <div>
+                            <div style="font-weight: 600;">Modo Offline</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Configure a integração para sincronizar</div>
+                        </div>
+                    </div>
+                    <div class="sync-actions">
+                        <button class="btn-small" onclick="showSetup()">⚙️ Configurar</button>
+                        <button class="btn-small" onclick="syncData()">🔄 Tentar Reconectar</button>
+                    </div>
+                `;
+            }
+        }
+
+        async function syncData() {
+            if (!API_URL) {
+                showSetup();
+                return;
+            }
+            
+            showToast('🔄 Sincronizando...', 'success');
+            const connected = await testConnection();
+            
+            if (connected) {
+                startAutoSync();
+            }
+        }
+
+        function showSetup() {
+            document.getElementById('setupScreen').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+            if (API_URL) {
+                document.getElementById('setupApiUrl').value = API_URL;
+            }
+        }
+
+        function connectAPI() {
+            const url = document.getElementById('setupApiUrl').value;
+            if (!url || !url.includes('script.google.com')) {
+                showToast('URL inválida. Cole a URL do Apps Script.', 'error');
+                return;
+            }
+            
+            API_URL = url;
+            localStorage.setItem('fleetcontrol_api_url', url);
+            testConnection();
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeBlock').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('✓ Código copiado!', 'success');
+            });
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'form') {
+                document.getElementById('form-section').classList.add('active');
+                document.querySelectorAll('.nav-tab')[0].classList.add('active');
+            } else {
+                document.getElementById('dashboard-section').classList.add('active');
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                renderRequests();
             }
         }
 
@@ -1221,7 +1568,6 @@
                 filtered = requests.filter(r => r.status === currentFilter);
             }
 
-            // Ordena: urgentes primeiro, depois por data
             filtered.sort((a, b) => {
                 if (a.prioridade === 'urgent' && b.prioridade !== 'urgent') return -1;
                 if (a.prioridade !== 'urgent' && b.prioridade === 'urgent') return 1;
@@ -1291,7 +1637,7 @@
                                 <span class="meta-item">👤 ${req.solicitante}</span>
                                 <span class="meta-item">•</span>
                                 <span class="meta-item">🏭 ${req.area}</span>
-                                ${req.localizacao ? `
+                                ${req.localizacao && req.localizacao !== '-' ? `
                                 <span class="meta-item">•</span>
                                 <span class="meta-item">📍 ${req.localizacao}</span>
                                 ` : ''}
@@ -1305,7 +1651,7 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            }).join();
             
             updateBadge(requests.filter(r => r.status === 'pendente' && r.prioridade === 'urgent').length);
         }
@@ -1316,6 +1662,12 @@
                 requests[idx].status = 'andamento';
                 requests[idx].inicio = new Date().toLocaleString('pt-BR');
                 saveLocal();
+                
+                // Se estiver online, atualiza na planilha também
+                if (isOnline) {
+                    updateSheetRow(id, {status: 'andamento', inicio: requests[idx].inicio});
+                }
+                
                 renderRequests();
                 updateStats();
                 showToast('Operação iniciada!', 'success');
@@ -1328,10 +1680,21 @@
                 requests[idx].status = 'concluido';
                 requests[idx].fim = new Date().toLocaleString('pt-BR');
                 saveLocal();
+                
+                if (isOnline) {
+                    updateSheetRow(id, {status: 'concluido', fim: requests[idx].fim});
+                }
+                
                 renderRequests();
                 updateStats();
                 showToast('Operação concluída!', 'success');
             }
+        }
+
+        async function updateSheetRow(id, data) {
+            // Função para atualizar linha específica na planilha (requer implementação no Apps Script)
+            // Por enquanto atualiza apenas local se estiver offline
+            console.log('Atualizando linha:', id, data);
         }
 
         function updateStats() {
@@ -1352,31 +1715,16 @@
             badge.textContent = count;
         }
 
+        function updateUI() {
+            renderRequests();
+            updateStats();
+        }
+
         function filterTasks(type) {
             currentFilter = type;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             renderRequests();
-        }
-
-        function toggleConfig() {
-            const panel = document.getElementById('configPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-            if (API_URL) document.getElementById('apiUrl').value = API_URL;
-        }
-
-        function saveConfig() {
-            const url = document.getElementById('apiUrl').value;
-            if (url && url.includes('script.google.com')) {
-                API_URL = url;
-                localStorage.setItem('fleetcontrol_api_url', url);
-                document.getElementById('configStatus').innerHTML = '<span style="color: #059669;">✓ Configuração salva!</span>';
-                document.getElementById('connectionStatus').className = 'connection-status online';
-                document.getElementById('connectionText').textContent = 'ONLINE';
-                showToast('Configuração salva!', 'success');
-            } else {
-                document.getElementById('configStatus').innerHTML = '<span style="color: #dc2626;">URL inválida</span>';
-            }
         }
 
         function showToast(message, type) {
