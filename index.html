@@ -1,225 +1,511 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FleetControl Pro | Sistema Online</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        :root {
-            --primary: #0f172a; --secondary: #1e293b; --accent: #f59e0b;
-            --accent-hover: #d97706; --success: #10b981; --danger: #ef4444;
-            --info: #3b82f6; --bg: #f8fafc; --surface: #ffffff;
-            --text: #334155; --text-light: #94a3b8; --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Painel do Operador - Industrial Desktop</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'industrial-dark': '#1a1a1a',
+                        'industrial-charcoal': '#2d2d2d',
+                        'safety-yellow': '#facc15',
+                        'safety-red': '#dc2626',
+                        'safety-green': '#16a34a',
+                        'safety-blue': '#2563eb',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-[#f1f1f1] text-gray-900; }
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-        header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
-        .header-content { display: flex; justify-content: space-between; align-items: center; }
-        .brand { display: flex; align-items: center; gap: 1rem; }
-        .logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
-        .connection-status { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid; }
-        .connection-status.online { background: #d1fae5; color: #047857; border-color: #6ee7b7; }
-        .connection-status.offline { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
-        .nav-tabs { display: flex; gap: 0.5rem; background: var(--bg); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border); }
-        .nav-tab { padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text-light); font-weight: 600; font-size: 0.875rem; border-radius: 6px; cursor: pointer; }
-        .nav-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .section { display: none; padding: 2rem 0; }
-        .section.active { display: block; }
-        .form-container { max-width: 700px; margin: 0 auto; background: white; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
-        .form-control { width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 8px; }
-        .radio-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
-        .radio-card input { position: absolute; opacity: 0; }
-        .radio-content { padding: 0.875rem; border: 1.5px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; background: white; }
-        .radio-card input:checked + .radio-content { border-color: var(--accent); background: #fffbeb; }
-        .btn-submit { width: 100%; padding: 1rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); border-top: 4px solid var(--border); }
-        .stat-card.red { border-top-color: var(--danger); }
-        .stat-card.blue { border-top-color: var(--info); }
-        .stat-card.yellow { border-top-color: var(--warning); }
-        .stat-card.green { border-top-color: var(--success); }
-        .requests-list { display: flex; flex-direction: column; gap: 0.75rem; }
-        .request-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1rem; display: flex; align-items: center; gap: 1rem; border-left: 5px solid #ccc; }
-        .request-card.urgente { border-left-color: var(--danger); }
-        .request-card.andamento { border-left-color: var(--warning); }
-        .request-card.concluido { border-left-color: var(--success); }
-        .btn-action { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
-        .btn-start { background: var(--primary); color: white; }
-        .btn-finish { background: var(--success); color: white; }
-        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem; border-radius: 8px; color: white; display: none; z-index: 1000; }
-        .hidden { display: none !important; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Animações Personalizadas */
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
+        .toast-enter { animation: slideInRight 0.3s ease forwards; }
+        .toast-exit { animation: slideOutRight 0.3s ease forwards; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col relative">
 
-<header>
-    <div class="container">
-        <div class="header-content">
-            <div class="brand"><div class="logo">⚡</div><h1>FleetControl Pro</h1></div>
-            <div style="display: flex; gap: 1rem;">
-                <div id="connStatus" class="connection-status offline"><span>●</span> OFFLINE</div>
-                <nav class="nav-tabs">
-                    <button class="nav-tab active" onclick="showTab('form')">📝 Solicitar</button>
-                    <button class="nav-tab" onclick="showTab('dashboard')">📊 Painel</button>
-                </nav>
+    <div id="notifications" class="fixed top-24 right-8 z-[1001] flex flex-col gap-4 pointer-events-none"></div>
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-industrial-dark/80 backdrop-blur-sm z-[2000] hidden flex-col justify-center items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-safety-yellow mb-4"></div>
+        <p class="text-white font-black text-xl tracking-widest uppercase">Carregando...</p>
+    </div>
+
+    <header class="bg-industrial-dark border-b-4 border-safety-yellow py-4 px-4 md:px-8 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div class="bg-safety-yellow p-2 rounded shadow-inner shrink-0">
+                    <span class="material-symbols-outlined text-industrial-dark text-3xl font-bold">forklift</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-white tracking-wider uppercase leading-tight">Painel do Operador</h1>
+                    <p class="text-safety-yellow text-xs font-bold tracking-[0.2em] uppercase">Controle Logístico</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2 md:gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                <div class="bg-safety-red text-white px-4 md:px-6 py-2 rounded border-b-4 border-red-900 flex flex-col items-center min-w-[100px] flex-1">
+                    <span class="text-2xl font-black" id="pendingCount">0</span>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter">Pendentes</span>
+                </div>
+                <div class="bg-safety-yellow text-industrial-dark px-4 md:px-6 py-2 rounded border-b-4 border-yellow-600 flex flex-col items-center min-w-[100px] flex-1">
+                    <span class="text-2xl font-black" id="inProgressCount">0</span>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter">Em Andamento</span>
+                </div>
+                <div class="bg-safety-green text-white px-4 md:px-6 py-2 rounded border-b-4 border-green-900 flex flex-col items-center min-w-[100px] flex-1">
+                    <span class="text-2xl font-black" id="completedCount">0</span>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter">Concluídos</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto py-8 px-4 md:px-8 w-full flex-grow">
+        
+        <div class="bg-white p-6 rounded shadow-sm border border-gray-200 mb-8">
+            <div class="flex flex-wrap items-end gap-6">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-black text-gray-500 uppercase mb-2 tracking-wider">Filtrar por Status</label>
+                    <div class="relative">
+                        <select id="statusFilter" class="w-full pl-4 pr-10 py-2.5 bg-gray-50 border-2 border-gray-200 rounded font-bold text-gray-700 focus:border-safety-yellow focus:ring-0 appearance-none uppercase text-sm">
+                            <option value="todos">Todos os Status</option>
+                            <option value="pendente">Pendentes</option>
+                            <option value="em-andamento">Em Andamento</option>
+                            <option value="concluido">Concluídos</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-black text-gray-500 uppercase mb-2 tracking-wider">Área / Localização</label>
+                    <div class="relative">
+                        <select id="areaFilter" class="w-full pl-4 pr-10 py-2.5 bg-gray-50 border-2 border-gray-200 rounded font-bold text-gray-700 focus:border-safety-yellow focus:ring-0 appearance-none uppercase text-sm">
+                            <option value="todos">Todas as Áreas</option>
+                            </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">location_on</span>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-48">
+                    <label class="block text-xs font-black text-gray-500 uppercase mb-2 tracking-wider">Data</label>
+                    <input id="dateFilter" class="w-full px-4 py-2 bg-gray-50 border-2 border-gray-200 rounded font-bold text-gray-700 focus:border-safety-yellow focus:ring-0 uppercase text-sm" type="date"/>
+                </div>
+
+                <button id="refreshBtn" class="w-full md:w-auto bg-industrial-charcoal hover:bg-industrial-dark text-white px-8 py-2.5 rounded font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-colors border-b-4 border-black active:border-b-0 active:translate-y-1">
+                    <span class="material-symbols-outlined text-safety-yellow">refresh</span>
+                    <span>Atualizar</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="requestsList" class="space-y-6">
+            </div>
+
+        <div id="emptyState" class="hidden py-24 text-center">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-200 mb-6">
+                <span class="material-symbols-outlined text-gray-400 text-5xl">inventory_2</span>
+            </div>
+            <h2 class="text-xl font-black text-gray-800 uppercase tracking-tight">Nenhuma solicitação encontrada</h2>
+            <p class="text-gray-500 font-medium mt-2">Ajuste os filtros ou aguarde por novas ordens de serviço.</p>
+        </div>
+    </main>
+
+    <div id="observationModal" class="fixed inset-0 z-[1100] hidden">
+        <div class="absolute inset-0 bg-industrial-dark/90 backdrop-blur-sm modal-backdrop"></div>
+        
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-lg bg-white rounded-lg shadow-2xl overflow-hidden border-t-8 border-safety-yellow">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 id="modalTitle" class="text-lg font-black text-industrial-dark uppercase tracking-wide">Adicionar Observação</h3>
+                <button class="modal-close text-gray-400 hover:text-red-600 transition-colors">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Detalhes da Ocorrência</label>
+                <textarea id="observationText" rows="4" class="w-full bg-gray-50 border-2 border-gray-200 rounded p-3 font-medium text-gray-800 focus:border-safety-yellow focus:ring-0 resize-none" placeholder="Digite aqui as observações sobre o atendimento..."></textarea>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+                <button class="modal-cancel px-6 py-2 rounded font-bold text-gray-600 hover:bg-gray-200 transition-colors uppercase text-sm">Cancelar</button>
+                <button id="confirmActionBtn" class="bg-industrial-dark hover:bg-black text-white px-6 py-2 rounded font-black uppercase text-sm tracking-wider shadow-lg transition-transform active:scale-95">Confirmar</button>
             </div>
         </div>
     </div>
-</header>
 
-<section id="formSection" class="section active">
-    <div class="container">
-        <div class="form-container">
-            <form id="requestForm" onsubmit="handleSubmit(event)">
-                <div class="form-group"><label class="form-label">Solicitante</label><input type="text" class="form-control" id="solicitante" required></div>
-                <div class="form-group"><label class="form-label">Área</label>
-                    <div class="radio-group">
-                        <label class="radio-card"><input type="radio" name="area" value="Injeção Alumínio" required><div class="radio-content">Injeção Alumínio</div></label>
-                        <label class="radio-card"><input type="radio" name="area" value="Logística"><div class="radio-content">Logística</div></label>
-                        <label class="radio-card"><input type="radio" name="area" value="Montagem"><div class="radio-content">Montagem</div></label>
-                    </div>
-                </div>
-                <div class="form-group"><label class="form-label">Operação</label>
-                    <div class="radio-group">
-                        <label class="radio-card"><input type="radio" name="tipo" value="Entrega" required><div class="radio-content">Entrega</div></label>
-                        <label class="radio-card"><input type="radio" name="tipo" value="Guarda"><div class="radio-content">Guarda</div></label>
-                    </div>
-                </div>
-                <div class="form-group"><label class="form-label">Código do Item</label><input type="text" class="form-control" id="codigo" required></div>
-                <div class="form-group"><label class="form-label">Tempo/Prioridade</label>
-                    <div class="radio-group">
-                        <label class="radio-card"><input type="radio" name="tempo" value="00:15 (Urgente)" required><div class="radio-content">00:15 Urgente</div></label>
-                        <label class="radio-card"><input type="radio" name="tempo" value="01:00 (Normal)"><div class="radio-content">01:00 Normal</div></label>
-                    </div>
-                </div>
-                <button type="submit" class="btn-submit" id="submitBtn">Enviar Solicitação</button>
-            </form>
+    <nav class="bg-industrial-dark border-t-2 border-industrial-charcoal py-3 px-4 md:px-12 flex items-center justify-between z-40 mt-auto">
+        <div class="flex items-center gap-12">
+            <div class="text-white text-xs font-bold opacity-50 uppercase tracking-widest hidden md:block">
+                Sistema Operacional v2.0
+            </div>
         </div>
-    </div>
-</section>
-
-<section id="dashboardSection" class="section">
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card red"><div>Urgentes</div><div id="statUrgent" style="font-size:1.5rem; font-weight:bold;">0</div></div>
-            <div class="stat-card blue"><div>Pendentes</div><div id="statPending" style="font-size:1.5rem; font-weight:bold;">0</div></div>
-            <div class="stat-card yellow"><div>Em Andamento</div><div id="statProgress" style="font-size:1.5rem; font-weight:bold;">0</div></div>
-            <div class="stat-card green"><div>Concluídas</div><div id="statDone" style="font-size:1.5rem; font-weight:bold;">0</div></div>
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <p class="text-white font-black text-xs uppercase">Operador Logístico</p>
+                <p class="text-safety-yellow text-[10px] font-bold tracking-tighter uppercase">Conectado</p>
+            </div>
+            <div class="bg-industrial-charcoal p-2 rounded-full text-white">
+                <span class="material-symbols-outlined text-xl">account_circle</span>
+            </div>
         </div>
-        <div id="requestsList" class="requests-list"></div>
-    </div>
-</section>
+    </nav>
 
-<div id="toast" class="toast"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const SHEETDB_URL = 'https://api.sheetbest.com/sheets/226b6c6b-5db7-41eb-8ad4-ff2bde53ef5b';
+            
+            // Referências do DOM
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const requestsList = document.getElementById('requestsList');
+            const emptyState = document.getElementById('emptyState');
+            const pendingCountEl = document.getElementById('pendingCount');
+            const inProgressCountEl = document.getElementById('inProgressCount');
+            const completedCountEl = document.getElementById('completedCount');
+            const statusFilter = document.getElementById('statusFilter');
+            const areaFilter = document.getElementById('areaFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            // Modal Elements
+            const observationModal = document.getElementById('observationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const observationText = document.getElementById('observationText');
+            const confirmActionBtn = document.getElementById('confirmActionBtn');
+            const modalCloseBtns = document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop');
+            
+            let allRequests = [];
+            let currentRequestId = null;
+            let currentAction = null;
 
-<script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwGYR1zCBGCK4LeXy_F-7zEYNYhGcKgZ4UUtDVAtfgamYySW2-cVBe9afMJyZ5r5cyXEA/exec'; // Substitua pela sua URL final
-    let requests = [];
+            // --- Funções de Interface ---
 
-    async function loadData() {
-        if (!API_URL.startsWith('http')) return;
-        try {
-            const response = await fetch(`${API_URL}?t=${Date.now()}`);
-            const data = await response.json();
-            if (Array.isArray(data)) {
-                requests = data;
-                updateConnectionStatus(true);
-                renderRequests();
-                updateStats();
-            }
-        } catch (e) {
-            updateConnectionStatus(false);
-            console.error("Erro de conexão:", e);
-        }
-    }
+            const toggleLoading = (show) => { 
+                loadingOverlay.style.display = show ? 'flex' : 'none'; 
+            };
 
-    function renderRequests() {
-        const container = document.getElementById('requestsList');
-        if (requests.length === 0) {
-            container.innerHTML = "<div style='text-align:center; padding:2rem;'>Nenhuma solicitação encontrada.</div>";
-            return;
-        }
-        container.innerHTML = requests.map(req => {
-            const isUrgent = req.tempo && req.tempo.includes('Urgente');
-            const cardClass = isUrgent ? 'urgente' : (req.status || '');
-            return `
-                <div class="request-card ${cardClass}">
-                    <div style="flex:1">
-                        <strong>${req.tipo || 'Op'}: ${req.codigo || 'S/C'}</strong><br>
-                        <small>👤 ${req.solicitante} | 🏭 ${req.area} | 🕐 ${req.datahora || ''}</small>
-                    </div>
-                    <div>
-                        ${req.status === 'pendente' ? `<button onclick="updateStatus('${req.id}', 'andamento')" class="btn-action btn-start">Iniciar</button>` : ''}
-                        ${req.status === 'andamento' ? `<button onclick="updateStatus('${req.id}', 'concluido')" class="btn-action btn-finish">Finalizar</button>` : ''}
-                        ${req.status === 'concluido' ? `<span style="color:green; font-weight:bold;">✓ Concluído</span>` : ''}
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
+            const showNotification = (message, type = 'info') => {
+                const container = document.getElementById('notifications');
+                const toast = document.createElement('div');
+                
+                // Estilização baseada no tipo
+                let bgClass = 'bg-industrial-dark border-l-8 border-gray-500';
+                let icon = 'info';
+                
+                if (type === 'success') { bgClass = 'bg-white border-l-8 border-safety-green text-industrial-dark'; icon = 'check_circle'; }
+                if (type === 'error') { bgClass = 'bg-white border-l-8 border-safety-red text-industrial-dark'; icon = 'error'; }
+                if (type === 'info') { bgClass = 'bg-white border-l-8 border-safety-blue text-industrial-dark'; icon = 'info'; }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        const formData = {
-            solicitante: document.getElementById('solicitante').value,
-            area: document.querySelector('input[name="area"]:checked').value,
-            tipo: document.querySelector('input[name="tipo"]:checked').value,
-            codigo: document.getElementById('codigo').value,
-            tempo: document.querySelector('input[name="tempo"]:checked').value,
-            observacao: '', localizacao: ''
-        };
-        try {
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
-            showToast("Sucesso!", "#10b981");
-            document.getElementById('requestForm').reset();
-            setTimeout(() => { showTab('dashboard'); loadData(); }, 1000);
-        } catch (e) { showToast("Erro ao enviar", "#ef4444"); }
-        finally { btn.disabled = false; }
-    }
+                toast.className = `${bgClass} p-4 rounded shadow-2xl flex items-center gap-4 min-w-[300px] pointer-events-auto toast-enter`;
+                toast.innerHTML = `
+                    <span class="material-symbols-outlined text-2xl">${icon}</span>
+                    <span class="font-bold text-sm uppercase tracking-wide">${message}</span>
+                `;
 
-    async function updateStatus(id, status) {
-        try {
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'update', id, status }) });
-            showToast("Status atualizado!", "#3b82f6");
-            setTimeout(loadData, 1000);
-        } catch (e) { showToast("Erro ao atualizar", "#ef4444"); }
-    }
+                container.appendChild(toast);
 
-    function updateStats() {
-        document.getElementById('statUrgent').textContent = requests.filter(r => r.tempo?.includes('Urgente') && r.status !== 'concluido').length;
-        document.getElementById('statPending').textContent = requests.filter(r => r.status === 'pendente').length;
-        document.getElementById('statProgress').textContent = requests.filter(r => r.status === 'andamento').length;
-        document.getElementById('statDone').textContent = requests.filter(r => r.status === 'concluido').length;
-    }
+                // Remover após 3 segundos
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    toast.addEventListener('animationend', () => toast.remove());
+                }, 3000);
+            };
 
-    function updateConnectionStatus(online) {
-        const el = document.getElementById('connStatus');
-        el.className = `connection-status ${online ? 'online' : 'offline'}`;
-        el.innerHTML = `<span>●</span> ${online ? 'ONLINE' : 'OFFLINE'}`;
-    }
+            // --- Lógica de Dados ---
 
-    function showTab(tab) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`${tab}Section`).classList.add('active');
-        event.currentTarget?.classList.add('active');
-        if (tab === 'dashboard') loadData();
-    }
+            const fetchData = async () => {
+                toggleLoading(true);
+                try {
+                    const response = await fetch(SHEETDB_URL);
+                    if (!response.ok) throw new Error(`Erro: ${response.status}`);
+                    const data = await response.json();
+                    
+                    // Normalização
+                    allRequests = data.map(r => ({
+                        ...r, 
+                        status: r.status ? String(r.status).toLowerCase().trim() : 'pendente' 
+                    }));
+                    
+                    populateAreaFilter();
+                    render();
+                    showNotification('Dados sincronizados', 'success');
+                } catch (error) {
+                    showNotification(`Erro ao carregar: ${error.message}`, 'error');
+                } finally { 
+                    toggleLoading(false); 
+                }
+            };
 
-    function showToast(m, c) {
-        const t = document.getElementById('toast');
-        t.textContent = m; t.style.background = c; t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
+            const updateData = async (id, updatePayload) => {
+                toggleLoading(true);
+                try {
+                    const url = `${SHEETDB_URL}/id/${id}`;
+                    const response = await fetch(url, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatePayload)
+                    });
+                    
+                    if (!response.ok) throw new Error('Falha na atualização');
+                    
+                    showNotification('Status atualizado com sucesso!', 'success');
+                    await fetchData(); // Recarrega para garantir sincronia
+                } catch (error) {
+                    showNotification(`Falha ao atualizar: ${error.message}`, 'error');
+                    toggleLoading(false);
+                }
+            };
 
-    window.onload = loadData;
-</script>
+            // --- Renderização ---
+
+            const render = () => {
+                const filteredRequests = getFilteredRequests();
+                
+                // Atualiza Contadores
+                pendingCountEl.textContent = allRequests.filter(r => r.status === 'pendente').length;
+                inProgressCountEl.textContent = allRequests.filter(r => r.status === 'em-andamento').length;
+                completedCountEl.textContent = allRequests.filter(r => r.status === 'concluido').length;
+
+                requestsList.innerHTML = '';
+                
+                if (filteredRequests.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                emptyState.style.display = 'none';
+
+                filteredRequests.forEach(req => {
+                    // Configurações visuais baseadas no status
+                    let statusColorInfo = {
+                        border: 'border-safety-red',
+                        bgBadge: 'bg-red-100 text-red-800 border-red-200',
+                        text: 'Pendente',
+                        bgLight: 'bg-red-50'
+                    };
+
+                    if (req.status === 'em-andamento') {
+                        statusColorInfo = {
+                            border: 'border-safety-yellow',
+                            bgBadge: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                            text: 'Em Andamento',
+                            bgLight: 'bg-yellow-50'
+                        };
+                    } else if (req.status === 'concluido') {
+                        statusColorInfo = {
+                            border: 'border-safety-green',
+                            bgBadge: 'bg-green-100 text-green-800 border-green-200',
+                            text: 'Concluído',
+                            bgLight: 'bg-green-50'
+                        };
+                    }
+
+                    // Tratamento de Prioridade
+                    const priorityRaw = req['⏱️  Tempo de Atendimento:'] || '';
+                    let priorityBadge = '';
+                    if (priorityRaw.includes('Urgente')) {
+                        priorityBadge = `<span class="bg-red-500 text-white text-[10px] px-2 py-1 rounded font-black uppercase animate-pulse">⚡ ${priorityRaw}</span>`;
+                    } else if (priorityRaw.includes('Moderado')) {
+                        priorityBadge = `<span class="bg-yellow-500 text-white text-[10px] px-2 py-1 rounded font-black uppercase">${priorityRaw}</span>`;
+                    }
+
+                    // Campos mapeados
+                    const fields = [
+                        { label: 'Solicitante', val: req['👤  Solicitante:'], icon: null },
+                        { label: 'Área', val: req['🏢  Área Solicitante'], icon: 'local_shipping' },
+                        { label: 'Operação', val: req['📋  Tipo de Operação:'], icon: 'package_2' },
+                        { label: 'Item', val: req['🆔  Código do Item:'], icon: null },
+                        { label: 'Localização', val: req['📍  Localização (opcional)'], icon: 'location_on' },
+                        { label: 'Obs. Solicitante', val: req['💬  Observação (opcional)'], icon: 'chat' },
+                        { label: 'Obs. Operador', val: req['observacaoOperador'], icon: 'engineering' }
+                    ];
+
+                    // Construção do Grid de Detalhes
+                    let gridHtml = '';
+                    fields.forEach(f => {
+                        if (f.val && String(f.val).trim() !== '') {
+                            const iconHtml = f.icon ? `<span class="material-symbols-outlined text-sm text-safety-yellow mr-1">${f.icon}</span>` : '';
+                            gridHtml += `
+                                <div class="break-words">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">${f.label}</label>
+                                    <p class="font-bold text-industrial-dark text-sm md:text-base flex items-center">${iconHtml} ${f.val}</p>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    // Construção dos Botões de Ação
+                    let actionsHtml = '';
+                    if (req.status === 'pendente') {
+                        actionsHtml = `
+                            <button onclick="handleAction('start', '${req.id}')" class="w-full md:w-auto bg-industrial-charcoal hover:bg-black text-white px-6 py-2.5 rounded font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-colors border-b-4 border-gray-900 active:border-b-0 active:translate-y-1">
+                                <span class="material-symbols-outlined">play_circle</span> Iniciar Atendimento
+                            </button>
+                        `;
+                    } else if (req.status === 'em-andamento') {
+                        actionsHtml = `
+                            <button onclick="handleAction('observe', '${req.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded font-bold text-sm flex items-center justify-center gap-2 transition-colors uppercase border-b-4 border-gray-300 active:border-b-0 active:translate-y-1">
+                                <span class="material-symbols-outlined">edit_note</span> Observação
+                            </button>
+                            <button onclick="handleAction('complete', '${req.id}')" class="flex-[2] bg-safety-green hover:bg-green-700 text-white px-4 py-2.5 rounded font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-colors border-b-4 border-green-900 active:border-b-0 active:translate-y-1">
+                                <span class="material-symbols-outlined">check_circle</span> Concluir
+                            </button>
+                        `;
+                    }
+
+                    // Montagem do Card
+                    const card = document.createElement('div');
+                    card.className = `bg-white rounded border-l-8 ${statusColorInfo.border} shadow-md p-6 relative overflow-hidden transition-transform hover:-translate-y-1`;
+                    card.innerHTML = `
+                        <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
+                            <div>
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <h3 class="text-2xl font-black text-industrial-dark">#${req.id || 'N/A'}</h3>
+                                    ${priorityBadge}
+                                </div>
+                                <p class="text-xs font-bold text-gray-400 mt-1 tracking-tight flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">schedule</span>
+                                    ${req['Carimbo de data/hora'] || ''}
+                                </p>
+                            </div>
+                            <div class="${statusColorInfo.bgBadge} px-3 py-1 rounded border">
+                                <span class="text-xs font-black uppercase tracking-widest">${statusColorInfo.text}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+                            ${gridHtml}
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
+                            ${actionsHtml}
+                        </div>
+                    `;
+                    requestsList.appendChild(card);
+                });
+            };
+
+            const populateAreaFilter = () => {
+                const currentArea = areaFilter.value;
+                const areas = [...new Set(allRequests.map(r => r['🏢  Área Solicitante']).filter(Boolean))];
+                
+                // Limpa opções (mantendo a primeira)
+                while (areaFilter.options.length > 1) { areaFilter.remove(1); }
+                
+                areas.sort().forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area;
+                    option.textContent = area;
+                    areaFilter.appendChild(option);
+                });
+                
+                if(areas.includes(currentArea)) areaFilter.value = currentArea;
+            };
+
+            const getFilteredRequests = () => {
+                const status = statusFilter.value;
+                const area = areaFilter.value;
+                const date = dateFilter.value;
+
+                return allRequests.filter(req => {
+                    const statusMatch = status === 'todos' || req.status === status;
+                    const areaMatch = area === 'todos' || req['🏢  Área Solicitante'] === area;
+                    let dateMatch = true;
+                    
+                    if (date && req['Carimbo de data/hora']) {
+                        try {
+                            const reqDateStr = req['Carimbo de data/hora'].split(' ')[0];
+                            const [day, month, year] = reqDateStr.split('/');
+                            // Formato ISO para comparação YYYY-MM-DD
+                            // Nota: Comparação simplificada de strings para evitar problemas de timezone
+                            dateMatch = `${year}-${month}-${day}` === date;
+                        } catch(e) { dateMatch = false; }
+                    }
+                    return statusMatch && areaMatch && dateMatch;
+                }).sort((a, b) => {
+                    // Ordenação por data decrescente
+                    try {
+                        const dateA = parseDate(a['Carimbo de data/hora']);
+                        const dateB = parseDate(b['Carimbo de data/hora']);
+                        return dateB - dateA;
+                    } catch(e) { return 0; }
+                });
+            };
+
+            const parseDate = (dateStr) => {
+                if(!dateStr) return new Date(0);
+                const [datePart, timePart] = dateStr.split(' ');
+                const [day, month, year] = datePart.split('/');
+                return new Date(`${year}-${month}-${day}T${timePart || '00:00:00'}`);
+            };
+
+            // --- Handlers de Ação ---
+
+            // Expor função globalmente para o onclick do HTML
+            window.handleAction = (action, id) => {
+                currentAction = action;
+                currentRequestId = id;
+                const request = allRequests.find(r => r.id === id);
+
+                if (action === 'start') {
+                    const now = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+                    updateData(id, { status: 'em-andamento', horarioInicio: now });
+                } else if (action === 'complete') {
+                    const now = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+                    updateData(id, { status: 'concluido', horarioConclusao: now });
+                } else if (action === 'observe') {
+                    modalTitle.textContent = `OBSERVAÇÃO #${request.id}`;
+                    observationText.value = request.observacaoOperador || '';
+                    observationModal.classList.remove('hidden');
+                }
+            };
+
+            // Modal Handlers
+            const closeModal = () => {
+                observationModal.classList.add('hidden');
+                observationText.value = '';
+                currentRequestId = null;
+                currentAction = null;
+            };
+
+            modalCloseBtns.forEach(btn => btn.addEventListener('click', closeModal));
+
+            confirmActionBtn.addEventListener('click', () => {
+                if (currentAction === 'observe' && currentRequestId !== null) {
+                    updateData(currentRequestId, { observacaoOperador: observationText.value });
+                }
+                closeModal();
+            });
+
+            // Listeners Gerais
+            [statusFilter, areaFilter, dateFilter].forEach(el => el.addEventListener('change', render));
+            refreshBtn.addEventListener('click', fetchData);
+
+            // Inicialização
+            fetchData();
+            setInterval(fetchData, 30000); // Polling a cada 30s
+        });
+    </script>
 </body>
 </html>
